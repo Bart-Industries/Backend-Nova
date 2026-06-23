@@ -43,6 +43,11 @@ cmake --build build
 
 ## Endpoints principales
 
+Documentacion interactiva:
+
+- `GET /docs`
+- `GET /openapi.json`
+
 ### Auth
 
 - `POST /api/v1/auth/register`
