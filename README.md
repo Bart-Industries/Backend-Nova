@@ -1,1 +1,140 @@
-# Backend-SC
+# StarCafe Backend
+
+Backend monolítico modular en C++ moderno con Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
+
+## Requisitos
+
+- CMake 3.20+
+- Compilador con soporte C++20
+- Drogon
+- OpenSSL
+- PostgreSQL accesible desde `DATABASE_URL`
+
+## Variables de entorno
+
+1. Copia `.env.example` a `.env`.
+2. Completa:
+   - `APP_PORT`
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `JWT_EXPIRES_IN`
+   - `CORS_ALLOWED_ORIGINS`
+   - `FRONTEND_BASE_URL`
+   - `BCRYPT_COST`
+
+## Ejecutar localmente
+
+```powershell
+cmake -S . -B build
+cmake --build build
+.\build\Debug\starcafe.exe
+```
+
+En Linux/macOS:
+
+```bash
+cmake -S . -B build
+cmake --build build
+./build/starcafe
+```
+
+## Endpoints principales
+
+### Auth
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `GET /api/v1/auth/me`
+
+### Público mesa
+
+- `GET /api/v1/tables/qr/{qrToken}`
+- `GET /api/v1/public/menu`
+- `POST /api/v1/public/tables/{qrToken}/orders`
+- `GET /api/v1/public/orders/{orderId}/status`
+
+### Kitchen
+
+- `GET /api/v1/kitchen/orders`
+- `PATCH /api/v1/kitchen/orders/{orderId}/preparing`
+- `PATCH /api/v1/kitchen/order-items/{itemId}/ready`
+- `PATCH /api/v1/kitchen/orders/{orderId}/ready`
+- `GET /api/v1/kitchen/orders/history`
+
+### Admin y caja
+
+- `GET /api/v1/admin/users`
+- `POST /api/v1/admin/users`
+- `PATCH /api/v1/admin/users/{id}/deactivate`
+- `GET /api/v1/admin/tables`
+- `POST /api/v1/admin/tables`
+- `PATCH /api/v1/admin/tables/{id}/deactivate`
+- `GET /api/v1/admin/categories`
+- `POST /api/v1/admin/categories`
+- `PATCH /api/v1/admin/categories/{id}`
+- `GET /api/v1/admin/products`
+- `POST /api/v1/admin/products`
+- `PATCH /api/v1/admin/products/{id}`
+- `PATCH /api/v1/admin/products/{id}/unavailable`
+- `PATCH /api/v1/admin/products/{id}/deactivate`
+- `GET /api/v1/admin/addons`
+- `POST /api/v1/admin/addons`
+- `PATCH /api/v1/admin/addons/{id}`
+- `POST /api/v1/admin/products/{productId}/addons/{addonId}`
+- `GET /api/v1/admin/orders`
+- `GET /api/v1/admin/orders/history`
+- `PATCH /api/v1/admin/orders/{orderId}/cancel`
+- `GET /api/v1/admin/cashier/orders/search`
+- `POST /api/v1/admin/cashier/orders/{orderId}/pay`
+
+## Ejemplos para Postman / Thunder Client
+
+### Registrar usuario admin
+
+```json
+{
+  "name": "Admin Principal",
+  "email": "admin@starcafe.com",
+  "password": "StrongPassword123!",
+  "role": "ADMIN"
+}
+```
+
+### Login
+
+```json
+{
+  "email": "admin@starcafe.com",
+  "password": "StrongPassword123!"
+}
+```
+
+### Crear pedido público
+
+```json
+{
+  "customerName": "Lucia",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "notes": "Sin cebolla",
+      "addonIds": [1, 2]
+    }
+  ]
+}
+```
+
+### Pagar pedido
+
+```json
+{
+  "amount": 49.8
+}
+```
+
+## Notas
+
+- El total del pedido siempre se recalcula en backend.
+- Los queries SQL asumen nombres de columnas convencionales sobre la base dada. Si tu esquema usa variantes como `restaurant_table_id` en lugar de `table_id`, ajusta los repositorios sin cambiar las reglas de dominio.
+- Productos, categorías, adicionales, mesas y usuarios se desactivan con `is_active = false`.
