@@ -17,6 +17,9 @@ AppConfig AppConfig::load()
     config.jwtExpiresIn = std::stoll(EnvLoader::getRequired("JWT_EXPIRES_IN"));
     config.frontendBaseUrl = EnvLoader::getRequired("FRONTEND_BASE_URL");
     config.bcryptCost = std::stoi(EnvLoader::getOptional("BCRYPT_COST", "12"));
+    config.uploadDir = EnvLoader::getRequired("UPLOAD_DIR");
+    config.maxProductImageSizeMb = std::stoll(EnvLoader::getOptional("MAX_PRODUCT_IMAGE_SIZE_MB", "5"));
+    config.publicFilesBaseUrl = EnvLoader::getRequired("PUBLIC_FILES_BASE_URL");
 
     std::stringstream stream(EnvLoader::getOptional("CORS_ALLOWED_ORIGINS"));
     std::string origin;

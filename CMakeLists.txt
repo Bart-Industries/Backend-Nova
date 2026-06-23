@@ -19,11 +19,13 @@ add_executable(starcafe
     src/infrastructure/config/app_config.cpp
     src/infrastructure/database/database.cpp
     src/infrastructure/repositories/postgres_repositories.cpp
+    src/infrastructure/storage/file_storage_service.cpp
     src/infrastructure/security/password_hasher.cpp
     src/infrastructure/security/jwt_service.cpp
     src/infrastructure/security/auth_filters.cpp
     src/infrastructure/qr/qr_token_service.cpp
     src/interfaces/rest/api_controller.cpp
+    src/interfaces/rest/product_image_controller.cpp
 )
 
 target_include_directories(starcafe PRIVATE src)

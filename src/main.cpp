@@ -10,6 +10,7 @@
 #include "infrastructure/security/auth_filters.h"
 #include "infrastructure/security/jwt_service.h"
 #include "infrastructure/security/password_hasher.h"
+#include "infrastructure/storage/file_storage_service.h"
 #include "interfaces/rest/service_registry.h"
 
 #include <drogon/drogon.h>
@@ -24,11 +25,13 @@ int main()
     infrastructure::security::PasswordHasher passwordHasher(config.bcryptCost);
     infrastructure::security::JwtService jwtService(config.jwtSecret, config.jwtExpiresIn);
     infrastructure::qr::QrTokenService qrTokenService;
+    infrastructure::storage::FileStorageService fileStorageService(config.uploadDir);
 
     infrastructure::repositories::PostgresUserRepository userRepository(db);
     infrastructure::repositories::PostgresCategoryRepository categoryRepository(db);
     infrastructure::repositories::PostgresAddonRepository addonRepository(db);
-    infrastructure::repositories::PostgresProductRepository productRepository(db, addonRepository);
+    infrastructure::repositories::PostgresProductImageRepository productImageRepository(db);
+    infrastructure::repositories::PostgresProductRepository productRepository(db, addonRepository, productImageRepository);
     infrastructure::repositories::PostgresRestaurantTableRepository tableRepository(db);
     infrastructure::repositories::PostgresOrderRepository orderRepository(db);
     infrastructure::repositories::PostgresPaymentRepository paymentRepository(db);
@@ -45,6 +48,14 @@ int main()
     application::menu::CreateAddonUseCase createAddon(addonRepository);
     application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository);
     application::menu::GetPublicMenuUseCase getPublicMenu(productRepository);
+    application::menu::ListProductsUseCase listProducts(productRepository);
+    application::menu::UploadProductImageUseCase uploadProductImage(
+        productRepository,
+        productImageRepository,
+        fileStorageService,
+        config.maxProductImageSizeMb * 1024 * 1024);
+    application::menu::ReplaceProductImageUseCase replaceProductImage(uploadProductImage);
+    application::menu::DeleteProductImageUseCase deleteProductImage(productRepository, productImageRepository, fileStorageService);
     application::tables::CreateTableUseCase createTable(tableRepository, qrTokenService);
     application::tables::GenerateQrTokenUseCase generateQrToken(tableRepository, qrTokenService);
     application::tables::GetTableByQrTokenUseCase getTableByQrToken(tableRepository);
@@ -66,6 +77,9 @@ int main()
     registry.userRepository = &userRepository;
     registry.productRepository = &productRepository;
     registry.addonRepository = &addonRepository;
+    registry.productImageRepository = &productImageRepository;
+    registry.fileStorageService = &fileStorageService;
+    registry.publicProductFilesBaseUrl = config.publicFilesBaseUrl + "/products";
     registry.registerUser = &registerUser;
     registry.login = &login;
     registry.getCurrentUser = &getCurrentUser;
@@ -78,6 +92,10 @@ int main()
     registry.createAddon = &createAddon;
     registry.assignAddonToProduct = &assignAddonToProduct;
     registry.getPublicMenu = &getPublicMenu;
+    registry.listProducts = &listProducts;
+    registry.uploadProductImage = &uploadProductImage;
+    registry.replaceProductImage = &replaceProductImage;
+    registry.deleteProductImage = &deleteProductImage;
     registry.createTable = &createTable;
     registry.generateQrToken = &generateQrToken;
     registry.getTableByQrToken = &getTableByQrToken;

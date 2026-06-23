@@ -5,6 +5,7 @@
 #include "application/orders/use_cases.h"
 #include "application/payments/use_cases.h"
 #include "application/tables/use_cases.h"
+#include "infrastructure/storage/file_storage_service.h"
 
 namespace starcafe::interfaces::rest
 {
@@ -13,6 +14,9 @@ struct ServiceRegistry
     domain::IUserRepository *userRepository{};
     domain::IProductRepository *productRepository{};
     domain::IAddonRepository *addonRepository{};
+    domain::IProductImageRepository *productImageRepository{};
+    infrastructure::storage::FileStorageService *fileStorageService{};
+    std::string publicProductFilesBaseUrl;
     application::identity::RegisterUserUseCase *registerUser{};
     application::identity::LoginUseCase *login{};
     application::identity::GetCurrentUserUseCase *getCurrentUser{};
@@ -25,6 +29,10 @@ struct ServiceRegistry
     application::menu::CreateAddonUseCase *createAddon{};
     application::menu::AssignAddonToProductUseCase *assignAddonToProduct{};
     application::menu::GetPublicMenuUseCase *getPublicMenu{};
+    application::menu::ListProductsUseCase *listProducts{};
+    application::menu::UploadProductImageUseCase *uploadProductImage{};
+    application::menu::ReplaceProductImageUseCase *replaceProductImage{};
+    application::menu::DeleteProductImageUseCase *deleteProductImage{};
     application::tables::CreateTableUseCase *createTable{};
     application::tables::GenerateQrTokenUseCase *generateQrToken{};
     application::tables::GetTableByQrTokenUseCase *getTableByQrToken{};

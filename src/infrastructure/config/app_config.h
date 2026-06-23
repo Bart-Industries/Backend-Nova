@@ -16,6 +16,9 @@ struct AppConfig
     std::vector<std::string> corsAllowedOrigins;
     std::string frontendBaseUrl;
     int bcryptCost{};
+    std::string uploadDir;
+    std::int64_t maxProductImageSizeMb{};
+    std::string publicFilesBaseUrl;
 
     static AppConfig load();
 };

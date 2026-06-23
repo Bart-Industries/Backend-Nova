@@ -49,7 +49,9 @@ class PostgresAddonRepository : public domain::IAddonRepository
 class PostgresProductRepository : public domain::IProductRepository
 {
   public:
-    PostgresProductRepository(drogon::orm::DbClientPtr db, domain::IAddonRepository &addonRepository);
+    PostgresProductRepository(drogon::orm::DbClientPtr db,
+                              domain::IAddonRepository &addonRepository,
+                              domain::IProductImageRepository &productImageRepository);
     std::optional<domain::menu::Product> findById(std::int64_t id) override;
     std::vector<domain::menu::Product> listAll(bool onlyActive = true) override;
     std::vector<domain::menu::Product> listPublicMenu() override;
@@ -63,6 +65,19 @@ class PostgresProductRepository : public domain::IProductRepository
     std::vector<domain::menu::Addon> loadAddons(std::int64_t productId);
     drogon::orm::DbClientPtr db_;
     domain::IAddonRepository &addonRepository_;
+    domain::IProductImageRepository &productImageRepository_;
+};
+
+class PostgresProductImageRepository : public domain::IProductImageRepository
+{
+  public:
+    explicit PostgresProductImageRepository(drogon::orm::DbClientPtr db);
+    std::optional<domain::menu::ProductImage> findMainByProductId(std::int64_t productId) override;
+    domain::menu::ProductImage upsertMain(const domain::menu::ProductImage &image) override;
+    void deleteMain(std::int64_t productId) override;
+
+  private:
+    drogon::orm::DbClientPtr db_;
 };
 
 class PostgresRestaurantTableRepository : public domain::IRestaurantTableRepository

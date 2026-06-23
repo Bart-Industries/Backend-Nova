@@ -39,7 +39,20 @@ domain::menu::Product mapProduct(const Result::Row &row)
             row["price"].as<double>(),
             row["is_available"].as<bool>(),
             row["is_active"].as<bool>(),
-            {}};
+            {},
+            std::nullopt};
+}
+
+domain::menu::ProductImage mapProductImage(const Result::Row &row)
+{
+    return {row["id"].as<std::int64_t>(),
+            row["product_id"].as<std::int64_t>(),
+            row["file_name"].as<std::string>(),
+            row["file_path"].as<std::string>(),
+            row["mime_type"].as<std::string>(),
+            row["file_size"].as<std::int64_t>(),
+            row["is_main"].as<bool>(),
+            row["created_at"].as<std::string>()};
 }
 
 domain::tables::RestaurantTable mapTable(const Result::Row &row)
@@ -161,8 +174,41 @@ domain::menu::Addon PostgresAddonRepository::update(std::int64_t id, const domai
     return mapAddon(result[0]);
 }
 
-PostgresProductRepository::PostgresProductRepository(DbClientPtr db, domain::IAddonRepository &addonRepository)
-    : db_(std::move(db)), addonRepository_(addonRepository)
+PostgresProductImageRepository::PostgresProductImageRepository(DbClientPtr db) : db_(std::move(db)) {}
+std::optional<domain::menu::ProductImage> PostgresProductImageRepository::findMainByProductId(std::int64_t productId)
+{
+    const auto result = db_->execSqlSync(
+        "select id, product_id, file_name, file_path, mime_type, file_size, is_main, cast(created_at as text) as created_at "
+        "from product_images where product_id = $1 and is_main = true limit 1",
+        productId);
+    if (result.empty())
+        return std::nullopt;
+    return mapProductImage(result[0]);
+}
+domain::menu::ProductImage PostgresProductImageRepository::upsertMain(const domain::menu::ProductImage &image)
+{
+    db_->execSqlSync("update product_images set is_main = false where product_id = $1", image.productId);
+    const auto existing = findMainByProductId(image.productId);
+    const auto result = db_->execSqlSync(
+        "insert into product_images (product_id, file_name, file_path, mime_type, file_size, is_main) "
+        "values ($1, $2, $3, $4, $5, true) "
+        "returning id, product_id, file_name, file_path, mime_type, file_size, is_main, cast(created_at as text) as created_at",
+        image.productId,
+        image.fileName,
+        image.filePath,
+        image.mimeType,
+        image.fileSize);
+    return mapProductImage(result[0]);
+}
+void PostgresProductImageRepository::deleteMain(std::int64_t productId)
+{
+    db_->execSqlSync("delete from product_images where product_id = $1 and is_main = true", productId);
+}
+
+PostgresProductRepository::PostgresProductRepository(DbClientPtr db,
+                                                     domain::IAddonRepository &addonRepository,
+                                                     domain::IProductImageRepository &productImageRepository)
+    : db_(std::move(db)), addonRepository_(addonRepository), productImageRepository_(productImageRepository)
 {
 }
 std::vector<domain::menu::Addon> PostgresProductRepository::loadAddons(std::int64_t productId)
@@ -179,6 +225,7 @@ std::optional<domain::menu::Product> PostgresProductRepository::findById(std::in
         return std::nullopt;
     auto product = mapProduct(result[0]);
     product.addons = loadAddons(product.id);
+    product.image = productImageRepository_.findMainByProductId(product.id);
     return product;
 }
 std::vector<domain::menu::Product> PostgresProductRepository::listAll(bool onlyActive)
@@ -190,6 +237,7 @@ std::vector<domain::menu::Product> PostgresProductRepository::listAll(bool onlyA
     {
         auto product = mapProduct(row);
         product.addons = loadAddons(product.id);
+        product.image = productImageRepository_.findMainByProductId(product.id);
         products.push_back(product);
     }
     return products;
@@ -201,6 +249,7 @@ std::vector<domain::menu::Product> PostgresProductRepository::listPublicMenu()
     {
         auto product = mapProduct(row);
         product.addons = loadAddons(product.id);
+        product.image = productImageRepository_.findMainByProductId(product.id);
         products.push_back(product);
     }
     return products;
@@ -227,6 +276,7 @@ domain::menu::Product PostgresProductRepository::update(std::int64_t id, const d
                                          id);
     auto updated = mapProduct(result[0]);
     updated.addons = loadAddons(updated.id);
+    updated.image = productImageRepository_.findMainByProductId(updated.id);
     return updated;
 }
 void PostgresProductRepository::markUnavailable(std::int64_t id) { db_->execSqlSync("update products set is_available = false where id = $1", id); }

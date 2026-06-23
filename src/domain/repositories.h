@@ -47,6 +47,15 @@ class IProductRepository
     virtual void assignAddon(std::int64_t productId, std::int64_t addonId) = 0;
 };
 
+class IProductImageRepository
+{
+  public:
+    virtual ~IProductImageRepository() = default;
+    virtual std::optional<menu::ProductImage> findMainByProductId(std::int64_t productId) = 0;
+    virtual menu::ProductImage upsertMain(const menu::ProductImage &image) = 0;
+    virtual void deleteMain(std::int64_t productId) = 0;
+};
+
 class IAddonRepository
 {
   public:

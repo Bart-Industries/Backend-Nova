@@ -3,6 +3,11 @@
 #include "application/common/dtos.h"
 #include "domain/repositories.h"
 
+namespace starcafe::infrastructure::storage
+{
+class FileStorageService;
+}
+
 namespace starcafe::application::menu
 {
 class CreateCategoryUseCase
@@ -93,5 +98,55 @@ class GetPublicMenuUseCase
 
   private:
     domain::IProductRepository &repository_;
+};
+
+class ListProductsUseCase
+{
+  public:
+    explicit ListProductsUseCase(domain::IProductRepository &repository);
+    std::vector<domain::menu::Product> execute(bool onlyActive = false);
+
+  private:
+    domain::IProductRepository &repository_;
+};
+
+class UploadProductImageUseCase
+{
+  public:
+    UploadProductImageUseCase(domain::IProductRepository &productRepository,
+                              domain::IProductImageRepository &imageRepository,
+                              infrastructure::storage::FileStorageService &fileStorageService,
+                              std::int64_t maxFileBytes);
+    domain::menu::ProductImage execute(const UploadProductImageCommand &command);
+
+  private:
+    domain::IProductRepository &productRepository_;
+    domain::IProductImageRepository &imageRepository_;
+    infrastructure::storage::FileStorageService &fileStorageService_;
+    std::int64_t maxFileBytes_;
+};
+
+class ReplaceProductImageUseCase
+{
+  public:
+    explicit ReplaceProductImageUseCase(UploadProductImageUseCase &uploadUseCase);
+    domain::menu::ProductImage execute(const UploadProductImageCommand &command);
+
+  private:
+    UploadProductImageUseCase &uploadUseCase_;
+};
+
+class DeleteProductImageUseCase
+{
+  public:
+    DeleteProductImageUseCase(domain::IProductRepository &productRepository,
+                              domain::IProductImageRepository &imageRepository,
+                              infrastructure::storage::FileStorageService &fileStorageService);
+    void execute(std::int64_t productId, bool deletePhysicalFile);
+
+  private:
+    domain::IProductRepository &productRepository_;
+    domain::IProductImageRepository &imageRepository_;
+    infrastructure::storage::FileStorageService &fileStorageService_;
 };
 }  // namespace starcafe::application::menu

@@ -98,6 +98,20 @@ Json::Value productToJson(const domain::menu::Product &product)
     {
         value["addons"].append(addonToJson(addon));
     }
+    if (product.image.has_value())
+    {
+        Json::Value image;
+        image["id"] = Json::Int64(product.image->id);
+        image["file_name"] = product.image->fileName;
+        image["mime_type"] = product.image->mimeType;
+        image["file_size"] = Json::Int64(product.image->fileSize);
+        image["url"] = services().publicProductFilesBaseUrl + "/" + product.image->fileName;
+        value["image"] = image;
+    }
+    else
+    {
+        value["image"] = Json::nullValue;
+    }
     return value;
 }
 
@@ -375,7 +389,7 @@ void ApiController::listProducts(const drogon::HttpRequestPtr &, std::function<v
 {
     executeSafely(callback, [&]() {
         Json::Value data(Json::arrayValue);
-        for (const auto &product : registry.productRepository->listAll(false))
+        for (const auto &product : registry.listProducts->execute(false))
             data.append(productToJson(product));
         return jsonResponse(successResponse(data));
     });

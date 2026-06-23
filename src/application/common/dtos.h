@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace starcafe::application
@@ -52,6 +53,16 @@ struct CreateAddonCommand
 {
     std::string name;
     double price{};
+};
+
+struct UploadProductImageCommand
+{
+    std::int64_t productId{};
+    std::string originalFileName;
+    std::string mimeType;
+    std::int64_t fileSize{};
+    std::string tempFilePath;
+    bool deleteOldPhysicalFile{false};
 };
 
 struct CreateTableCommand
