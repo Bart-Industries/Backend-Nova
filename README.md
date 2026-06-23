@@ -1,6 +1,6 @@
 # StarCafe Backend
 
-Backend monolítico modular en C++ moderno con Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
+Backend monolitico modular en C++ moderno con Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
 
 ## Requisitos
 
@@ -21,6 +21,9 @@ Backend monolítico modular en C++ moderno con Drogon, PostgreSQL y una estructu
    - `CORS_ALLOWED_ORIGINS`
    - `FRONTEND_BASE_URL`
    - `BCRYPT_COST`
+   - `UPLOAD_DIR`
+   - `MAX_PRODUCT_IMAGE_SIZE_MB`
+   - `PUBLIC_FILES_BASE_URL`
 
 ## Ejecutar localmente
 
@@ -46,12 +49,13 @@ cmake --build build
 - `POST /api/v1/auth/login`
 - `GET /api/v1/auth/me`
 
-### Público mesa
+### Publico mesa
 
 - `GET /api/v1/tables/qr/{qrToken}`
 - `GET /api/v1/public/menu`
 - `POST /api/v1/public/tables/{qrToken}/orders`
 - `GET /api/v1/public/orders/{orderId}/status`
+- `GET /api/v1/uploads/products/{fileName}`
 
 ### Kitchen
 
@@ -77,6 +81,9 @@ cmake --build build
 - `PATCH /api/v1/admin/products/{id}`
 - `PATCH /api/v1/admin/products/{id}/unavailable`
 - `PATCH /api/v1/admin/products/{id}/deactivate`
+- `POST /api/v1/admin/products/{productId}/image`
+- `PATCH /api/v1/admin/products/{productId}/image`
+- `DELETE /api/v1/admin/products/{productId}/image`
 - `GET /api/v1/admin/addons`
 - `POST /api/v1/admin/addons`
 - `PATCH /api/v1/admin/addons/{id}`
@@ -109,7 +116,7 @@ cmake --build build
 }
 ```
 
-### Crear pedido público
+### Crear pedido publico
 
 ```json
 {
@@ -133,8 +140,19 @@ cmake --build build
 }
 ```
 
+### Subir imagen principal de producto
+
+Usa `multipart/form-data` con el campo `image`.
+
+```bash
+curl -X POST http://localhost:8080/api/v1/admin/products/1/image \
+  -H "Authorization: Bearer TOKEN" \
+  -F "image=@./capuccino.webp"
+```
+
 ## Notas
 
 - El total del pedido siempre se recalcula en backend.
+- Las imagenes de productos se guardan en storage local y PostgreSQL solo almacena metadata y `file_path`.
 - Los queries SQL asumen nombres de columnas convencionales sobre la base dada. Si tu esquema usa variantes como `restaurant_table_id` en lugar de `table_id`, ajusta los repositorios sin cambiar las reglas de dominio.
-- Productos, categorías, adicionales, mesas y usuarios se desactivan con `is_active = false`.
+- Productos, categorias, adicionales, mesas y usuarios se desactivan con `is_active = false`.

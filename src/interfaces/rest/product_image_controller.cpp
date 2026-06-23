@@ -121,7 +121,7 @@ void ProductImageController::serveImage(const drogon::HttpRequestPtr &,
     try
     {
         const auto absolutePath = services().fileStorageService->resolvePublicFile(fileName);
-        callback(drogon::HttpResponse::newFileResponse(absolutePath, fileName, drogon::CT_NONE));
+        callback(drogon::HttpResponse::newFileResponse(absolutePath));
     }
     catch (const domain::DomainError &error)
     {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "domain/common/errors.h"
+
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -17,6 +19,17 @@ class ImageMimeType
 
   private:
     std::string value_;
+};
+
+class FileSize
+{
+  public:
+    explicit FileSize(std::int64_t bytes);
+    std::int64_t bytes() const;
+    void validateMax(std::int64_t maxBytes) const;
+
+  private:
+    std::int64_t bytes_;
 };
 
 inline ImageMimeType::ImageMimeType(std::string value) : value_(std::move(value))
@@ -61,17 +74,6 @@ inline void FileSize::validateMax(std::int64_t maxBytes) const
     }
 }
 
-class FileSize
-{
-  public:
-    explicit FileSize(std::int64_t bytes);
-    std::int64_t bytes() const;
-    void validateMax(std::int64_t maxBytes) const;
-
-  private:
-    std::int64_t bytes_;
-};
-
 struct ProductImage
 {
     std::int64_t id{};
@@ -113,4 +115,3 @@ struct Product
     std::optional<ProductImage> image;
 };
 }  // namespace starcafe::domain::menu
-#include "domain/common/errors.h"

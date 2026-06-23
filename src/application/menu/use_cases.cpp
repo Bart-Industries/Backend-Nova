@@ -24,7 +24,7 @@ domain::menu::Product CreateProductUseCase::execute(const CreateProductCommand &
     {
         throw domain::DomainError("Product name and price are required");
     }
-    return repository_.create({0, command.categoryId, command.name, command.description, command.price, true, true, {}});
+    return repository_.create({0, command.categoryId, command.name, command.description, command.price, true, true, {}, std::nullopt});
 }
 
 UpdateProductUseCase::UpdateProductUseCase(domain::IProductRepository &repository) : repository_(repository) {}
@@ -42,7 +42,8 @@ domain::menu::Product UpdateProductUseCase::execute(std::int64_t id, const Updat
                                command.price,
                                command.isAvailable,
                                true,
-                               {}});
+                               {},
+                               std::nullopt});
 }
 
 MarkProductUnavailableUseCase::MarkProductUnavailableUseCase(domain::IProductRepository &repository) : repository_(repository) {}
