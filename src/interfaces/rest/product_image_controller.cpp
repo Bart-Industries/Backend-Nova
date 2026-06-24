@@ -4,13 +4,28 @@
 #include "interfaces/rest/service_registry.h"
 #include "infrastructure/storage/file_storage_service.h"
 
-#include <drogon/MultiPartParser.h>
+#include <drogon/MultiPart.h>
 #include <filesystem>
 
 namespace starcafe::interfaces::rest
 {
 namespace
 {
+std::string mimeTypeFromContentType(drogon::ContentType contentType)
+{
+    switch (contentType)
+    {
+    case drogon::CT_IMAGE_PNG:
+        return "image/png";
+    case drogon::CT_IMAGE_JPG:
+        return "image/jpeg";
+    case drogon::CT_IMAGE_WEBP:
+        return "image/webp";
+    default:
+        return "";
+    }
+}
+
 drogon::HttpResponsePtr jsonResponse(bool success, const Json::Value &data, const std::string &message = "", drogon::HttpStatusCode code = drogon::k200OK)
 {
     Json::Value body;
@@ -63,9 +78,19 @@ application::UploadProductImageCommand mapUploadCommand(const drogon::HttpReques
     application::UploadProductImageCommand command;
     command.productId = std::stoll(productId);
     command.originalFileName = file.getFileName();
-    command.mimeType = file.getContentType().toString();
+    command.mimeType = mimeTypeFromContentType(file.getContentType());
+    if (command.mimeType.empty())
+    {
+        throw domain::DomainError("Solo se permiten imagenes PNG, JPG, JPEG o WEBP");
+    }
     command.fileSize = static_cast<std::int64_t>(file.fileLength());
-    command.tempFilePath = file.getTempFileName();
+    const auto tempDirectory = std::filesystem::temp_directory_path();
+    const auto tempPath = tempDirectory / ("starcafe-upload-" + drogon::utils::getUuid() + ".tmp");
+    if (file.saveAs(tempPath.string()) != 0)
+    {
+        throw domain::DomainError("Could not persist uploaded image");
+    }
+    command.tempFilePath = tempPath.string();
     return command;
 }
 }  // namespace

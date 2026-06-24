@@ -171,8 +171,8 @@ Json::Value paymentToJson(const domain::payments::Payment &payment)
 
 const Json::Value &body(const drogon::HttpRequestPtr &req)
 {
-    const auto *json = req->getJsonObject();
-    if (json == nullptr)
+    const auto json = req->getJsonObject();
+    if (!json)
     {
         throw domain::DomainError("Request body must be valid JSON");
     }

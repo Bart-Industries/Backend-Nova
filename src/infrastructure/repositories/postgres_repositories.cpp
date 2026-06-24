@@ -9,7 +9,7 @@ namespace starcafe::infrastructure::repositories
 {
 namespace
 {
-domain::identity::User mapUser(const Result::Row &row)
+domain::identity::User mapUser(const Row &row)
 {
     return {row["id"].as<std::int64_t>(),
             row["name"].as<std::string>(),
@@ -20,17 +20,17 @@ domain::identity::User mapUser(const Result::Row &row)
             {}};
 }
 
-domain::menu::Category mapCategory(const Result::Row &row)
+domain::menu::Category mapCategory(const Row &row)
 {
     return {row["id"].as<std::int64_t>(), row["name"].as<std::string>(), row["description"].as<std::string>(), row["is_active"].as<bool>()};
 }
 
-domain::menu::Addon mapAddon(const Result::Row &row)
+domain::menu::Addon mapAddon(const Row &row)
 {
     return {row["id"].as<std::int64_t>(), row["name"].as<std::string>(), row["price"].as<double>(), row["is_active"].as<bool>()};
 }
 
-domain::menu::Product mapProduct(const Result::Row &row)
+domain::menu::Product mapProduct(const Row &row)
 {
     return {row["id"].as<std::int64_t>(),
             row["category_id"].as<std::int64_t>(),
@@ -43,7 +43,7 @@ domain::menu::Product mapProduct(const Result::Row &row)
             std::nullopt};
 }
 
-domain::menu::ProductImage mapProductImage(const Result::Row &row)
+domain::menu::ProductImage mapProductImage(const Row &row)
 {
     return {row["id"].as<std::int64_t>(),
             row["product_id"].as<std::int64_t>(),
@@ -55,12 +55,12 @@ domain::menu::ProductImage mapProductImage(const Result::Row &row)
             row["created_at"].as<std::string>()};
 }
 
-domain::tables::RestaurantTable mapTable(const Result::Row &row)
+domain::tables::RestaurantTable mapTable(const Row &row)
 {
     return {row["id"].as<std::int64_t>(), row["table_number"].as<int>(), row["qr_token"].as<std::string>(), row["is_active"].as<bool>()};
 }
 
-domain::orders::Order mapOrderBase(const Result::Row &row)
+domain::orders::Order mapOrderBase(const Row &row)
 {
     domain::orders::Order order;
     order.id = row["id"].as<std::int64_t>();
