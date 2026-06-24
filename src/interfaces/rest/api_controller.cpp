@@ -6,6 +6,7 @@
 #include "infrastructure/security/auth_filters.h"
 #include "interfaces/rest/service_registry.h"
 
+#include <algorithm>
 #include <json/json.h>
 
 namespace starcafe::interfaces::rest
@@ -13,6 +14,12 @@ namespace starcafe::interfaces::rest
 namespace
 {
 ServiceRegistry registry;
+
+std::string sanitizeText(std::string value)
+{
+    value.erase(std::remove(value.begin(), value.end(), '\0'), value.end());
+    return value;
+}
 
 Json::Value successResponse(const Json::Value &data)
 {
@@ -187,9 +194,9 @@ void ApiController::registerUser(const drogon::HttpRequestPtr &req, std::functio
     executeSafely(callback, [&]() {
         const auto &json = body(req);
         application::RegisterUserCommand command{
-            json["name"].asString(),
-            json["email"].asString(),
-            json["password"].asString(),
+            sanitizeText(json["name"].asString()),
+            sanitizeText(json["email"].asString()),
+            sanitizeText(json["password"].asString()),
             domain::userRoleFromString(json["role"].asString())};
         return jsonResponse(successResponse(userToJson(registry.registerUser->execute(command))), drogon::k201Created);
     });
@@ -199,7 +206,7 @@ void ApiController::login(const drogon::HttpRequestPtr &req, std::function<void(
 {
     executeSafely(callback, [&]() {
         const auto &json = body(req);
-        const auto auth = registry.login->execute({json["email"].asString(), json["password"].asString()});
+        const auto auth = registry.login->execute({sanitizeText(json["email"].asString()), sanitizeText(json["password"].asString())});
         Json::Value data;
         data["token"] = auth.token;
         data["userId"] = Json::Int64(auth.userId);
@@ -245,13 +252,13 @@ void ApiController::createOrderFromTable(const drogon::HttpRequestPtr &req,
         const auto &json = body(req);
         application::CreateOrderFromTableCommand command;
         command.qrToken = qrToken;
-        command.customerName = json["customerName"].asString();
+        command.customerName = sanitizeText(json["customerName"].asString());
         for (const auto &item : json["items"])
         {
             application::CreateOrderItemCommand itemCommand;
             itemCommand.productId = item["productId"].asInt64();
             itemCommand.quantity = item["quantity"].asInt();
-            itemCommand.notes = item["notes"].asString();
+            itemCommand.notes = sanitizeText(item.get("notes", "").asString());
             for (const auto &addonId : item["addonIds"])
                 itemCommand.addonIds.push_back(addonId.asInt64());
             command.items.push_back(itemCommand);
@@ -380,7 +387,8 @@ void ApiController::createCategory(const drogon::HttpRequestPtr &req, std::funct
 {
     executeSafely(callback, [&]() {
         const auto &json = body(req);
-        return jsonResponse(successResponse(categoryToJson(registry.createCategory->execute({json["name"].asString(), json["description"].asString()}))),
+        return jsonResponse(successResponse(categoryToJson(registry.createCategory->execute({sanitizeText(json["name"].asString()),
+                                                                                             sanitizeText(json.get("description", "").asString())}))),
                             drogon::k201Created);
     });
 }
@@ -400,7 +408,10 @@ void ApiController::createProduct(const drogon::HttpRequestPtr &req, std::functi
     executeSafely(callback, [&]() {
         const auto &json = body(req);
         return jsonResponse(successResponse(productToJson(registry.createProduct->execute(
-                                {json["categoryId"].asInt64(), json["name"].asString(), json["description"].asString(), json["price"].asDouble()}))),
+                                {json["categoryId"].asInt64(),
+                                 sanitizeText(json["name"].asString()),
+                                 sanitizeText(json.get("description", "").asString()),
+                                 json["price"].asDouble()}))),
                             drogon::k201Created);
     });
 }
@@ -413,8 +424,8 @@ void ApiController::updateProduct(const drogon::HttpRequestPtr &req,
         const auto &json = body(req);
         application::UpdateProductCommand command{
             json["categoryId"].asInt64(),
-            json["name"].asString(),
-            json["description"].asString(),
+            sanitizeText(json["name"].asString()),
+            sanitizeText(json.get("description", "").asString()),
             json["price"].asDouble(),
             json.get("isAvailable", true).asBool()};
         return jsonResponse(successResponse(productToJson(registry.updateProduct->execute(std::stoll(id), command))));
@@ -451,7 +462,7 @@ void ApiController::createAddon(const drogon::HttpRequestPtr &req, std::function
 {
     executeSafely(callback, [&]() {
         const auto &json = body(req);
-        return jsonResponse(successResponse(addonToJson(registry.createAddon->execute({json["name"].asString(), json["price"].asDouble()}))),
+        return jsonResponse(successResponse(addonToJson(registry.createAddon->execute({sanitizeText(json["name"].asString()), json["price"].asDouble()}))),
                             drogon::k201Created);
     });
 }
