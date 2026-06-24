@@ -26,7 +26,18 @@ std::vector<domain::orders::Order> SearchOrdersForCashierUseCase::execute(const 
                                                                            const std::string &tableNumber,
                                                                            const std::string &status)
 {
-    const auto normalizedStatus = status.empty() ? status : domain::toString(domain::orderStatusFromString(normalizeStatus(status)));
+    std::string normalizedStatus = status;
+    if (!status.empty())
+    {
+        try
+        {
+            normalizedStatus = domain::toString(domain::orderStatusFromString(normalizeStatus(status)));
+        }
+        catch (const std::invalid_argument &)
+        {
+            throw domain::DomainError("Invalid order status");
+        }
+    }
     return orderRepository_.searchOrders(customerName, tableNumber, normalizedStatus);
 }
 

@@ -34,6 +34,15 @@ domain::menu::Product UpdateProductUseCase::execute(std::int64_t id, const Updat
     {
         throw domain::DomainError("Product name and price are required");
     }
+    const auto existing = repository_.findById(id);
+    if (!existing.has_value())
+    {
+        throw domain::DomainError("Product not found");
+    }
+    if (!existing->isActive)
+    {
+        throw domain::DomainError("Inactive products cannot be modified");
+    }
     return repository_.update(id,
                               {0,
                                command.categoryId,
@@ -89,6 +98,10 @@ domain::menu::ProductImage UploadProductImageUseCase::execute(const UploadProduc
     {
         throw domain::DomainError("Product not found");
     }
+    if (!product->isActive)
+    {
+        throw domain::DomainError("Inactive products cannot be modified");
+    }
 
     domain::menu::ImageMimeType mimeType(command.mimeType);
     domain::menu::FileSize fileSize(command.fileSize);
@@ -134,6 +147,10 @@ void DeleteProductImageUseCase::execute(std::int64_t productId, bool deletePhysi
     if (!product.has_value())
     {
         throw domain::DomainError("Product not found");
+    }
+    if (!product->isActive)
+    {
+        throw domain::DomainError("Inactive products cannot be modified");
     }
 
     const auto existing = imageRepository_.findMainByProductId(productId);

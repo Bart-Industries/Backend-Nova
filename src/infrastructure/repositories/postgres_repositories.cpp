@@ -263,17 +263,35 @@ std::optional<domain::menu::ProductImage> PostgresProductImageRepository::findMa
 }
 domain::menu::ProductImage PostgresProductImageRepository::upsertMain(const domain::menu::ProductImage &image)
 {
-    db_->execSqlSync("update product_images set is_main = false where product_id = $1", image.productId);
     const auto existing = findMainByProductId(image.productId);
-    const auto result = db_->execSqlSync(
-        "insert into product_images (product_id, file_name, file_path, mime_type, file_size, is_main) "
-        "values ($1, $2, $3, $4, $5, true) "
-        "returning id, product_id, file_name, file_path, mime_type, file_size, is_main, cast(created_at as text) as created_at",
-        image.productId,
-        image.fileName,
-        image.filePath,
-        image.mimeType,
-        image.fileSize);
+    db_->execSqlSync("delete from product_images where product_id = $1 and ($2 = 0 or id <> $2)", image.productId, existing.has_value() ? existing->id : 0);
+
+    Result result;
+    if (existing.has_value())
+    {
+        result = db_->execSqlSync(
+            "update product_images "
+            "set file_name = $1, file_path = $2, mime_type = $3, file_size = $4, is_main = true "
+            "where id = $5 "
+            "returning id, product_id, file_name, file_path, mime_type, file_size, is_main, cast(created_at as text) as created_at",
+            image.fileName,
+            image.filePath,
+            image.mimeType,
+            image.fileSize,
+            existing->id);
+    }
+    else
+    {
+        result = db_->execSqlSync(
+            "insert into product_images (product_id, file_name, file_path, mime_type, file_size, is_main) "
+            "values ($1, $2, $3, $4, $5, true) "
+            "returning id, product_id, file_name, file_path, mime_type, file_size, is_main, cast(created_at as text) as created_at",
+            image.productId,
+            image.fileName,
+            image.filePath,
+            image.mimeType,
+            image.fileSize);
+    }
     return mapProductImage(result[0]);
 }
 void PostgresProductImageRepository::deleteMain(std::int64_t productId)
