@@ -107,6 +107,10 @@ void ProductImageController::uploadMainImage(const drogon::HttpRequestPtr &req,
     {
         callback(jsonResponse(false, Json::nullValue, error.what()));
     }
+    catch (const std::exception &error)
+    {
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
+    }
 }
 
 void ProductImageController::replaceMainImage(const drogon::HttpRequestPtr &req,
@@ -120,6 +124,10 @@ void ProductImageController::replaceMainImage(const drogon::HttpRequestPtr &req,
     catch (const domain::DomainError &error)
     {
         callback(jsonResponse(false, Json::nullValue, error.what()));
+    }
+    catch (const std::exception &error)
+    {
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
     }
 }
 
@@ -137,6 +145,10 @@ void ProductImageController::deleteMainImage(const drogon::HttpRequestPtr &req,
     {
         callback(jsonResponse(false, Json::nullValue, error.what()));
     }
+    catch (const std::exception &error)
+    {
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
+    }
 }
 
 void ProductImageController::serveImage(const drogon::HttpRequestPtr &,
@@ -151,6 +163,10 @@ void ProductImageController::serveImage(const drogon::HttpRequestPtr &,
     catch (const domain::DomainError &error)
     {
         callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
+    }
+    catch (const std::exception &error)
+    {
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
     }
 }
 }  // namespace starcafe::interfaces::rest

@@ -264,7 +264,14 @@ std::optional<domain::menu::ProductImage> PostgresProductImageRepository::findMa
 domain::menu::ProductImage PostgresProductImageRepository::upsertMain(const domain::menu::ProductImage &image)
 {
     const auto existing = findMainByProductId(image.productId);
-    db_->execSqlSync("delete from product_images where product_id = $1 and ($2 = 0 or id <> $2)", image.productId, existing.has_value() ? existing->id : 0);
+    if (existing.has_value())
+    {
+        db_->execSqlSync("delete from product_images where product_id = $1 and id <> $2", image.productId, existing->id);
+    }
+    else
+    {
+        db_->execSqlSync("delete from product_images where product_id = $1", image.productId);
+    }
 
     Result result;
     if (existing.has_value())
