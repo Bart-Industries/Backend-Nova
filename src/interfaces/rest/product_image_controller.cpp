@@ -105,7 +105,7 @@ void ProductImageController::uploadMainImage(const drogon::HttpRequestPtr &req,
     }
     catch (const domain::DomainError &error)
     {
-        callback(jsonResponse(false, Json::nullValue, error.what()));
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
     }
     catch (const std::exception &error)
     {
@@ -123,7 +123,7 @@ void ProductImageController::replaceMainImage(const drogon::HttpRequestPtr &req,
     }
     catch (const domain::DomainError &error)
     {
-        callback(jsonResponse(false, Json::nullValue, error.what()));
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
     }
     catch (const std::exception &error)
     {
@@ -143,7 +143,7 @@ void ProductImageController::deleteMainImage(const drogon::HttpRequestPtr &req,
     }
     catch (const domain::DomainError &error)
     {
-        callback(jsonResponse(false, Json::nullValue, error.what()));
+        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
     }
     catch (const std::exception &error)
     {
