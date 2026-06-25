@@ -1,8 +1,22 @@
 #include "application/payments/use_cases.h"
 #include "domain/common/errors.h"
 
+#include <algorithm>
+#include <cctype>
+
 namespace starcafe::application::payments
 {
+namespace
+{
+std::string normalizeStatus(std::string value)
+{
+    std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c) {
+        return static_cast<char>(std::toupper(c));
+    });
+    return value;
+}
+}  // namespace
+
 SearchOrdersForCashierUseCase::SearchOrdersForCashierUseCase(domain::IOrderRepository &orderRepository)
     : orderRepository_(orderRepository)
 {
@@ -12,7 +26,19 @@ std::vector<domain::orders::Order> SearchOrdersForCashierUseCase::execute(const 
                                                                            const std::string &tableNumber,
                                                                            const std::string &status)
 {
-    return orderRepository_.searchOrders(customerName, tableNumber, status);
+    std::string normalizedStatus = status;
+    if (!status.empty())
+    {
+        try
+        {
+            normalizedStatus = domain::toString(domain::orderStatusFromString(normalizeStatus(status)));
+        }
+        catch (const std::invalid_argument &)
+        {
+            throw domain::DomainError("Invalid order status");
+        }
+    }
+    return orderRepository_.searchOrders(customerName, tableNumber, normalizedStatus);
 }
 
 PayOrderUseCase::PayOrderUseCase(domain::IOrderRepository &orderRepository, domain::IPaymentRepository &paymentRepository)

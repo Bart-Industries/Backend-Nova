@@ -1,0 +1,1 @@
+[{"id":1,"name":"Capuccino Test Editado","description":"Cafe con leche espumada","price":"13.50","category_id":1,"is_available":true,"is_active":false,"created_at":"2026-06-24 01:59:11.215918"},{"id":2,"name":"Capuccino Test1","description":"Cafe con leche1","price":"12.00","category_id":1,"is_available":true,"is_active":true,"created_at":"2026-06-24 02:01:35.765967"}]

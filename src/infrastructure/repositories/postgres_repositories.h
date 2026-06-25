@@ -18,7 +18,9 @@ class PostgresUserRepository : public domain::IUserRepository
     void deactivate(std::int64_t id) override;
 
   private:
+    const std::string &passwordColumn();
     drogon::orm::DbClientPtr db_;
+    std::string passwordColumn_;
 };
 
 class PostgresCategoryRepository : public domain::ICategoryRepository
@@ -30,7 +32,10 @@ class PostgresCategoryRepository : public domain::ICategoryRepository
     domain::menu::Category update(std::int64_t id, const domain::menu::Category &category) override;
 
   private:
+    bool hasDescriptionColumn();
     drogon::orm::DbClientPtr db_;
+    bool hasDescriptionColumn_{false};
+    bool categorySchemaResolved_{false};
 };
 
 class PostgresAddonRepository : public domain::IAddonRepository

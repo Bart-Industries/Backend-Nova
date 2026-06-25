@@ -1,0 +1,1342 @@
+{
+  "name": "Admin Principal",
+  "email": "admin@starcafe.com",
+  "password": "Admin123456!",
+  "role": "ADMIN"
+}
+
+{
+  "name": "Cocina 1",
+  "email": "kitchen@starcafe.com",
+  "password": "Kitchen123!",
+  "role": "KITCHEN"
+}
+
+ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJraXRjaGVuQHN0YXJjYWZlLmNvbSIsCgkiZXhwIiA6IDE3ODIzNTIzMjcsCgkibmFtZSIgOiAiQ29jaW5hIDEiLAoJInJvbGUiIDogIktJVENIRU4iLAoJInN1YiIgOiAyCn0.fzoTwHui7ZA_9YDB1w-cHZZ5vAL57fRsmnEbFoCN-jM
+
+
+KITCHEN
+
+ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0
+
+ADMIN
+
+
+{
+  "data": {
+    "description": "",
+    "id": 1,
+    "isActive": true,
+    "name": "Cafes Test"
+  },
+  "success": true
+}
+
+Categoryid 1
+
+{
+  "data": {
+    "id": 1,
+    "isActive": true,
+    "name": "Leche extra",
+    "price": 2.5
+  },
+  "success": true
+}
+
+Addonsid 1
+
+{
+  "data": {
+    "categoryId": 1,
+    "description": "Cafe con leche",
+    "id": 1,
+    "image": null,
+    "isActive": true,
+    "isAvailable": true,
+    "name": "Capuccino Test",
+    "price": 12.5
+  },
+  "success": true
+}
+
+Productid 1
+
+PATCH
+/api/v1/admin/products/{id}
+Actualizar producto
+
+
+Parameters
+Try it out
+Reset
+Name	Description
+id *
+string
+(path)
+Id del producto
+
+1
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "categoryId": 1,
+  "name": "Capuccino Test Editado",
+  "description": "Cafe con leche espumada",
+  "price": 13.5,
+  "isAvailable": true
+}
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'http://localhost:8080/api/v1/admin/products/1' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "categoryId": 1,
+  "name": "Capuccino Test Editado",
+  "description": "Cafe con leche espumada",
+  "price": 13.5,
+  "isAvailable": true
+}'
+Request URL
+http://localhost:8080/api/v1/admin/products/1
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": {
+    "categoryId": 1,
+    "description": "Cafe con leche espumada",
+    "id": 1,
+    "image": null,
+    "isActive": true,
+    "isAvailable": true,
+    "name": "Capuccino Test Editado",
+    "price": 13.5
+  },
+  "success": true
+}
+Response headers
+ content-length: 180 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 01:59:59 GMT 
+ server: drogon/1.9.13 
+Request duration
+339 ms
+Responses
+Code	Description	Links
+200	
+OK
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "data": {},
+  "success": true
+}
+No links
+201	
+Created
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "data": {},
+  "success": true
+}
+No links
+400	
+Bad Request
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "message": "string",
+  "success": true
+}
+No links
+401	
+Unauthorized
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "message": "string",
+  "success": true
+}
+
+PATCH /api/v1/admin/products/{id}
+
+{
+  "data": {
+    "categoryId": 1,
+    "description": "Cafe con leche1",
+    "id": 2,
+    "image": null,
+    "isActive": true,
+    "isAvailable": true,
+    "name": "Capuccino Test1",
+    "price": 12
+  },
+  "success": true
+}
+
+Productid 2
+
+me permidio actualizar esto PATCH
+/api/v1/admin/products/{id}
+Actualizar producto
+incluso despues de desactivar el producto en PATCH
+/api/v1/admin/products/{id}/deactivate, pero si se ve en products como FALSE el 1 y TRUE el 2
+
+Response body
+Download
+{
+  "data": [
+    {
+      "categoryId": 1,
+      "description": "Cafe con leche espumada",
+      "id": 1,
+      "image": null,
+      "isActive": false,
+      "isAvailable": true,
+      "name": "Capuccino Test Editado",
+      "price": 13.5
+    },
+    {
+      "addons": [
+        {
+          "id": 1,
+          "isActive": true,
+          "name": "Leche extra",
+          "price": 2.5
+        }
+      ],
+      "categoryId": 1,
+      "description": "Cafe con leche1",
+      "id": 2,
+      "image": null,
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Test1",
+      "price": 12
+    }
+  ],
+  "success": true
+}
+
+Del addons 1 con el product 2
+
+product_1_b37b41b0-a15c-4193-8838-48e61b2d702c.jpg
+
+si me muestra la imagen que cargue despues de actualizarla pq la primera fue otra
+
+Al inicio las pruebas de las imagenes lo hice con el id 1 que supuestamente estaba desactivado pero me dejo usarlo
+
+luego hice las pruebas con el id 2
+
+se guardan ambas imagenes o sea no es como si lo reemplazara, solo el main se pone en TRUE O FALSE se muestra la que esta en TRUE
+
+despues del DELETE queda asi y se borra la imagen que estaba en TRUE, pero es prueba con el id 1, que supuestamente esta deshabilitado
+
+{
+  "data": [
+    {
+      "categoryId": 1,
+      "description": "Cafe con leche espumada",
+      "id": 1,
+      "image": null,
+      "isActive": false,
+      "isAvailable": true,
+      "name": "Capuccino Test Editado",
+      "price": 13.5
+    },
+    {
+      "addons": [
+        {
+          "id": 1,
+          "isActive": true,
+          "name": "Leche extra",
+          "price": 2.5
+        }
+      ],
+      "categoryId": 1,
+      "description": "Cafe con leche1",
+      "id": 2,
+      "image": {
+        "file_name": "product_2_67654c07-067e-44ae-8914-7bd3852f7d80.jpg",
+        "file_size": 15218,
+        "id": 4,
+        "mime_type": "image/jpeg",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_2_67654c07-067e-44ae-8914-7bd3852f7d80.jpg"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Test1",
+      "price": 12
+    }
+  ],
+  "success": true
+}
+despues de eliminar la imagen del id 1 que deberia estar deshabilitado
+
+al hacer eso si sale en la carpeta upload/products
+
+{
+  "data": {
+    "id": 1,
+    "isActive": true,
+    "qrToken": "7c46b6ea-67cf-4d0f-9709-164dab08225a",
+    "tableNumber": 10
+  },
+  "success": true
+}
+
+Tableid 1 y Qrtoken 1
+
+{
+  "data": {
+    "id": 2,
+    "isActive": true,
+    "qrToken": "c9584434-d3e9-445b-9cdb-45c211cb675c",
+    "tableNumber": 1
+  },
+  "success": true
+}
+
+Table de prueba para desactivar
+
+me salen como TRUE Y FALSE
+
+GET
+/api/v1/tables/qr/{qrToken}
+Obtener mesa por QR
+esto si funciona ya que lo probe con la mesa desactivada y me dio error pero con la mesa activa no, no como con los productos, que me funciono incluso estando desactivado
+
+{
+  "data": [
+    {
+      "addons": [
+        {
+          "id": 1,
+          "isActive": true,
+          "name": "Leche extra",
+          "price": 2.5
+        }
+      ],
+      "categoryId": 1,
+      "description": "Cafe con leche1",
+      "id": 2,
+      "image": {
+        "file_name": "product_2_67654c07-067e-44ae-8914-7bd3852f7d80.jpg",
+        "file_size": 15218,
+        "id": 4,
+        "mime_type": "image/jpeg",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_2_67654c07-067e-44ae-8914-7bd3852f7d80.jpg"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Test1",
+      "price": 12
+    }
+  ],
+  "success": true
+}
+Lo bueno es que en GET
+/api/v1/public/menu
+Listar menu publico
+no sale el producto desactivado solo el activo entonces eso es bueno pero esta medio raro lo que paso con la imagen
+
+{
+  "data": {
+    "createdAt": "2026-06-24 03:16:49.979432",
+    "customerName": "Luis",
+    "id": 1,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra",
+            "price": 2.5
+          }
+        ],
+        "id": 1,
+        "notes": "Sin azucar",
+        "productId": 2,
+        "productName": "Capuccino Test1",
+        "quantity": 2,
+        "status": "PENDING",
+        "unitPrice": 12
+      }
+    ],
+    "status": "PENDING",
+    "tableId": 1,
+    "tableNumber": 10,
+    "total": 29
+  },
+  "success": true
+}
+el POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+responde correctamente
+
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-24 03:16:49.979432",
+    "customerName": "Luis",
+    "id": 1,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra",
+            "price": 2.5
+          }
+        ],
+        "id": 1,
+        "notes": "Sin azucar",
+        "productId": 2,
+        "productName": "Capuccino Test1",
+        "quantity": 2,
+        "status": "PENDING",
+        "unitPrice": 12
+      }
+    ],
+    "status": "PENDING",
+    "tableId": 1,
+    "tableNumber": 10,
+    "total": 29
+  },
+  "success": true
+}
+el GET
+/api/v1/public/orders/{orderId}/status
+Estado de pedido con id 1 responde bien
+
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-24 03:16:49.979432",
+    "customerName": "Luis",
+    "id": 1,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra",
+            "price": 2.5
+          }
+        ],
+        "id": 1,
+        "notes": "Sin azucar",
+        "productId": 2,
+        "productName": "Capuccino Test1",
+        "quantity": 2,
+        "status": "READY",
+        "unitPrice": 12
+      }
+    ],
+    "status": "READY",
+    "tableId": 1,
+    "tableNumber": 10,
+    "total": 29
+  },
+  "success": true
+}
+Paso a ready despues de pasar por todo esto 
+PATCH /api/v1/kitchen/orders/{orderId}/preparing
+PATCH /api/v1/kitchen/order-items/{itemId}/ready
+PATCH /api/v1/kitchen/orders/{orderId}/ready
+
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+Parameters
+Cancel
+Reset
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+7c46b6ea-67cf-4d0f-9709-164dab08225a
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 2,
+      "quantity": 2,
+      "notes": "Con extra azucar",
+      "addonIds": [1]
+    }
+  ]
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 2,
+      "quantity": 2,
+      "notes": "Con extra azucar",
+      "addonIds": [1]
+    }
+  ]
+}'
+Request URL
+http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-24 03:25:32.973656",
+    "customerName": "Luis",
+    "id": 2,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra",
+            "price": 2.5
+          }
+        ],
+        "id": 2,
+        "notes": "Con extra azucar",
+        "productId": 2,
+        "productName": "Capuccino Test1",
+        "quantity": 2,
+        "status": "PENDING",
+        "unitPrice": 12
+      }
+    ],
+    "status": "PENDING",
+    "tableId": 1,
+    "tableNumber": 10,
+    "total": 29
+algo bueno es que cuando intente crear otra orden con el producto id 1 deshabilitado me dio bad request y despues con id 2 que si vale si me dejo hacerlo
+
+GET
+/api/v1/admin/cashier/orders/search
+Buscar pedidos para caja
+
+
+Parameters
+Cancel
+Name	Description
+customerName
+string
+(query)
+Nombre del cliente
+
+Luis
+tableNumber
+string
+(query)
+Numero de mesa
+
+10
+status
+string
+(query)
+Estado del pedido
+
+READY
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/admin/cashier/orders/search?customerName=Luis&tableNumber=10&status=READY' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0'
+Request URL
+http://localhost:8080/api/v1/admin/cashier/orders/search?customerName=Luis&tableNumber=10&status=READY
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "createdAt": "2026-06-24 03:16:49.979432",
+      "customerName": "Luis",
+      "id": 1,
+      "items": [
+        {
+          "addons": [
+            {
+              "addonId": 1,
+              "name": "Leche extra",
+              "price": 2.5
+            }
+          ],
+          "id": 1,
+          "notes": "Sin azucar",
+          "productId": 2,
+          "productName": "Capuccino Test1",
+          "quantity": 2,
+          "status": "READY",
+          "unitPrice": 12
+        }
+      ],
+      "status": "READY",
+      "tableId": 1,
+      "tableNumber": 10,
+      "total": 29
+    }
+  ],
+  "success": true
+}
+Response headers
+ content-length: 347 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:28:08 GMT 
+ server: drogon/1.9.13 
+Request duration
+708 ms
+me funciona bien con la mesa, orden y nombre
+
+POST
+/api/v1/admin/cashier/orders/{orderId}/pay
+Pagar pedido
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+orderId *
+string
+(path)
+Id del pedido
+
+1
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "amount": 29.5
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/cashier/orders/1/pay' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "amount": 29.5
+}'
+Request URL
+http://localhost:8080/api/v1/admin/cashier/orders/1/pay
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": {
+    "amount": 29.5,
+    "id": 1,
+    "orderId": 1,
+    "paidAt": "2026-06-24 03:29:13.214209",
+    "status": "PAID"
+  },
+  "success": true
+}
+el pago se hizo correctamente
+
+Admin Products
+Gestion de productos del menu.
+
+
+
+GET
+/api/v1/admin/products
+Listar productos
+
+
+
+POST
+/api/v1/admin/products
+Crear producto
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "categoryId": 1,
+  "name": "Capuccino Test2",
+  "description": "Cafe con leche2",
+  "price": 12
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/products' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJraXRjaGVuQHN0YXJjYWZlLmNvbSIsCgkiZXhwIiA6IDE3ODIzNTIzMjcsCgkibmFtZSIgOiAiQ29jaW5hIDEiLAoJInJvbGUiIDogIktJVENIRU4iLAoJInN1YiIgOiAyCn0.fzoTwHui7ZA_9YDB1w-cHZZ5vAL57fRsmnEbFoCN-jM' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "categoryId": 1,
+  "name": "Capuccino Test2",
+  "description": "Cafe con leche2",
+  "price": 12
+}'
+Request URL
+http://localhost:8080/api/v1/admin/products
+Server response
+Code	Details
+401	
+Error: Unauthorized
+
+Response body
+Download
+{
+  "message": "Admin role required",
+  "success": false
+}
+Response headers
+ content-length: 49 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:31:30 GMT 
+ server: drogon/1.9.13 
+
+Admin Categories
+Gestion de categorias del menu.
+
+
+
+GET
+/api/v1/admin/categories
+Listar categorias
+
+
+
+POST
+/api/v1/admin/categories
+Crear categoria
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "name": "Cafes Test1",
+  "description": "Bebidas calientes1"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/categories' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJraXRjaGVuQHN0YXJjYWZlLmNvbSIsCgkiZXhwIiA6IDE3ODIzNTIzMjcsCgkibmFtZSIgOiAiQ29jaW5hIDEiLAoJInJvbGUiIDogIktJVENIRU4iLAoJInN1YiIgOiAyCn0.fzoTwHui7ZA_9YDB1w-cHZZ5vAL57fRsmnEbFoCN-jM' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Cafes Test1",
+  "description": "Bebidas calientes1"
+}'
+Request URL
+http://localhost:8080/api/v1/admin/categories
+Server response
+Code	Details
+401	
+Error: Unauthorized
+
+Response body
+Download
+{
+  "message": "Admin role required",
+  "success": false
+}
+Response headers
+ content-length: 49 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:32:07 GMT 
+ server: drogon/1.9.13 
+
+Admin Product Images
+Carga, reemplazo y eliminacion de imagenes de producto.
+
+
+
+DELETE
+/api/v1/admin/products/{productId}/image
+Eliminar metadata de imagen principal
+
+
+
+PATCH
+/api/v1/admin/products/{productId}/image
+Reemplazar imagen principal de producto
+
+
+
+POST
+/api/v1/admin/products/{productId}/image
+Subir imagen principal de producto
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+productId *
+string
+(path)
+Id del producto
+
+2
+Request body
+
+multipart/form-data
+image *
+string($binary)
+SC.jpg
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/products/2/image' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJraXRjaGVuQHN0YXJjYWZlLmNvbSIsCgkiZXhwIiA6IDE3ODIzNTIzMjcsCgkibmFtZSIgOiAiQ29jaW5hIDEiLAoJInJvbGUiIDogIktJVENIRU4iLAoJInN1YiIgOiAyCn0.fzoTwHui7ZA_9YDB1w-cHZZ5vAL57fRsmnEbFoCN-jM' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'image=@SC.jpg;type=image/jpeg'
+Request URL
+http://localhost:8080/api/v1/admin/products/2/image
+Server response
+Code	Details
+401	
+Error: Unauthorized
+
+Response body
+Download
+{
+  "message": "Admin role required",
+  "success": false
+}
+Response headers
+ content-length: 49 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:32:38 GMT 
+ server: drogon/1.9.13 
+
+estos 3 fallan pq no tienen el permiso requerido
+
+Admin Users
+Gestion de usuarios administrativos y de cocina.
+
+
+
+GET
+/api/v1/admin/users
+Listar usuarios
+
+
+Parameters
+Cancel
+No parameters
+
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/admin/users' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/admin/users
+Server response
+Code	Details
+401	
+Error: Unauthorized
+
+Response body
+Download
+{
+  "message": "Invalid or missing bearer token",
+  "success": false
+}
+Response headers
+ content-length: 61 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:33:29 GMT 
+ server: drogon/1.9.13 
+
+Admin Orders
+Supervision y acciones administrativas sobre pedidos.
+
+
+
+GET
+/api/v1/admin/orders
+Listar pedidos admin
+
+
+Parameters
+Cancel
+No parameters
+
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/admin/orders' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/admin/orders
+Server response
+Code	Details
+401	
+Error: Unauthorized
+
+Response body
+Download
+{
+  "message": "Invalid or missing bearer token",
+  "success": false
+}
+Response headers
+ content-length: 61 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:33:47 GMT 
+ server: drogon/1.9.13 
+esto tmb falla como debe ser ya que estoy deslogueado 
+GET /api/v1/admin/users
+GET /api/v1/admin/orders
+Debe fallar.
+
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+Parameters
+Cancel
+Reset
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+7c46b6ea-67cf-4d0f-9709-164dab08225a
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 2,
+      "quantity": 2,
+      "notes": "Con extra cafe",
+      "addonIds": [1]
+    }
+  ]
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 2,
+      "quantity": 2,
+      "notes": "Con extra cafe",
+      "addonIds": [1]
+    }
+  ]
+}'
+Request URL
+http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-24 03:35:05.891225",
+    "customerName": "Luis",
+    "id": 3,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra",
+            "price": 2.5
+          }
+        ],
+        "id": 3,
+        "notes": "Con extra cafe",
+        "productId": 2,
+        "productName": "Capuccino Test1",
+        "quantity": 2,
+        "status": "PENDING",
+        "unitPrice": 12
+      }
+    ],
+    "status": "PENDING",
+    "tableId": 1,
+    "tableNumber": 10,
+    "total": 29
+  },
+  "success": true
+}
+Response headers
+ content-length: 353 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:35:03 GMT 
+ server: drogon/1.9.13 
+Request duration
+1252 ms
+estos 3 funcionan estando deslogueado 
+GET /api/v1/public/menu
+GET /api/v1/tables/qr/{qrToken}
+POST /api/v1/public/tables/{qrToken}/orders
+
+POST
+/api/v1/admin/products/{productId}/image
+Subir imagen principal de producto
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+productId *
+string
+(path)
+Id del producto
+
+2
+Request body
+
+multipart/form-data
+image *
+string($binary)
+Event Hubs.txt
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/products/2/image' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'image=@Event Hubs.txt;type=text/plain'
+Request URL
+http://localhost:8080/api/v1/admin/products/2/image
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "message": "Solo se permiten imagenes PNG, JPG, JPEG o WEBP",
+  "success": false
+}
+Response headers
+ content-length: 77 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:38:02 GMT 
+ server: drogon/1.9.13 
+Request duration
+372 ms
+falla el post con un txt
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+Parameters
+Cancel
+Reset
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+7c46b6ea-67cf-4d0f-9709-164dab08225a
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 9999,
+      "quantity": 2,
+      "notes": "Con extra cafe",
+      "addonIds": [1]
+    }
+  ]
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 9999,
+      "quantity": 2,
+      "notes": "Con extra cafe",
+      "addonIds": [1]
+    }
+  ]
+}'
+Request URL
+http://localhost:8080/api/v1/public/tables/7c46b6ea-67cf-4d0f-9709-164dab08225a/orders
+Server response
+Code	Details
+400	
+Error: Bad Request
+
+Response body
+Download
+{
+  "message": "Product is not available",
+  "success": false
+}
+Response headers
+ content-length: 54 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:38:45 GMT 
+ server: drogon/1.9.13 
+falla pq el producto no existe 
+GET
+/api/v1/tables/qr/{qrToken}
+Obtener mesa por QR
+
+Parameters
+Cancel
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+7c46b6ea-67cf-4d0f-9709-164daa
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/tables/qr/7c46b6ea-67cf-4d0f-9709-164daa' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/tables/qr/7c46b6ea-67cf-4d0f-9709-164daa
+Server response
+Code	Details
+400	
+Error: Bad Request
+
+Response body
+Download
+{
+  "message": "Table not found",
+  "success": false
+}
+Response headers
+ content-length: 45 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:39:23 GMT 
+ server: drogon/1.9.13 
+falla pq el qr no es valido o sea no encuentra la mesa
+GET
+/api/v1/public/orders/{orderId}/status
+Estado de pedido
+
+Parameters
+Cancel
+Name	Description
+orderId *
+string
+(path)
+Id del pedido
+
+9999
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/orders/9999/status' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/orders/9999/status
+Server response
+Code	Details
+400	
+Error: Bad Request
+
+Response body
+Download
+{
+  "message": "Order not found",
+  "success": false
+}
+Response headers
+ content-length: 45 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:42:46 GMT 
+ server: drogon/1.9.13
+otra vez el producto no existe entonces esto no funciona para obtener el estatus 
+GET
+/api/v1/admin/cashier/orders/search
+Buscar pedidos para caja
+
+
+Parameters
+Cancel
+Name	Description
+customerName
+string
+(query)
+Nombre del cliente
+
+Luis
+tableNumber
+string
+(query)
+Numero de mesa
+
+10
+status
+string
+(query)
+Estado del pedido
+
+Listo
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/admin/cashier/orders/search?customerName=Luis&tableNumber=10&status=Listo' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJhZG1pbkBzdGFyY2FmZS5jb20iLAoJImV4cCIgOiAxNzgyMzUyMzczLAoJIm5hbWUiIDogIkFkbWluIFByaW5jaXBhbCIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiAxCn0.fBPuhOPaHDua26GZEupIxxqEPguo2NVqvGcqU6xICl0'
+Request URL
+http://localhost:8080/api/v1/admin/cashier/orders/search?customerName=Luis&tableNumber=10&status=Listo
+Server response
+Code	Details
+500
+Undocumented
+Error: Internal Server Error
+
+Response body
+Download
+{
+  "message": "Invalid order status",
+  "success": false
+}
+Response headers
+ content-length: 50 
+ content-type: application/json; charset=utf-8 
+ date: Wed,24 Jun 2026 03:43:45 GMT 
+ server: drogon/1.9.13 
+aca falla pq Listo no es un status
