@@ -14,6 +14,7 @@ namespace starcafe::interfaces::rest
 namespace
 {
 ServiceRegistry registry;
+Json::Value orderToJson(const domain::orders::Order &order);
 
 std::string sanitizeText(std::string value)
 {
@@ -81,6 +82,20 @@ Json::Value tableToJson(const domain::tables::RestaurantTable &table)
     return value;
 }
 
+Json::Value publicTableSessionToJson(const application::orders::PublicTableSession &session)
+{
+    Json::Value value;
+    value["table"] = tableToJson(session.table);
+    value["activeOrdersCount"] = Json::Int64(session.activeOrdersCount);
+    value["remainingSlots"] = Json::Int64(session.remainingSlots);
+    value["canCreateMoreOrders"] = session.canCreateMoreOrders;
+    for (const auto &order : session.activeOrders)
+    {
+        value["activeOrders"].append(orderToJson(order));
+    }
+    return value;
+}
+
 Json::Value addonToJson(const domain::menu::Addon &addon)
 {
     Json::Value value;
@@ -142,6 +157,7 @@ Json::Value orderToJson(const domain::orders::Order &order)
     value["status"] = domain::toString(order.status);
     value["total"] = order.total;
     value["createdAt"] = order.createdAt;
+    value["updatedAt"] = order.updatedAt;
     for (const auto &item : order.items)
     {
         Json::Value jsonItem;
@@ -232,6 +248,11 @@ void ApiController::me(const drogon::HttpRequestPtr &req, std::function<void(con
 void ApiController::getTableByQr(const drogon::HttpRequestPtr &, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string qrToken)
 {
     executeSafely(callback, [&]() { return jsonResponse(successResponse(tableToJson(registry.getTableByQrToken->execute(qrToken)))); });
+}
+
+void ApiController::getPublicTableSession(const drogon::HttpRequestPtr &, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string qrToken)
+{
+    executeSafely(callback, [&]() { return jsonResponse(successResponse(publicTableSessionToJson(registry.getPublicTableSession->execute(qrToken)))); });
 }
 
 void ApiController::getPublicMenu(const drogon::HttpRequestPtr &, std::function<void(const drogon::HttpResponsePtr &)> &&callback)
@@ -429,6 +450,14 @@ void ApiController::updateProduct(const drogon::HttpRequestPtr &req,
             json["price"].asDouble(),
             json.get("isAvailable", true).asBool()};
         return jsonResponse(successResponse(productToJson(registry.updateProduct->execute(std::stoll(id), command))));
+    });
+}
+
+void ApiController::activateProduct(const drogon::HttpRequestPtr &, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string id)
+{
+    executeSafely(callback, [&]() {
+        registry.activateProduct->execute(std::stoll(id));
+        return jsonResponse(successResponse(Json::Value("Product activated")));
     });
 }
 

@@ -58,6 +58,9 @@ domain::menu::Product UpdateProductUseCase::execute(std::int64_t id, const Updat
 MarkProductUnavailableUseCase::MarkProductUnavailableUseCase(domain::IProductRepository &repository) : repository_(repository) {}
 void MarkProductUnavailableUseCase::execute(std::int64_t id) { repository_.markUnavailable(id); }
 
+ActivateProductUseCase::ActivateProductUseCase(domain::IProductRepository &repository) : repository_(repository) {}
+void ActivateProductUseCase::execute(std::int64_t id) { repository_.activate(id); }
+
 DeactivateProductUseCase::DeactivateProductUseCase(domain::IProductRepository &repository) : repository_(repository) {}
 void DeactivateProductUseCase::execute(std::int64_t id) { repository_.deactivate(id); }
 

@@ -62,6 +62,7 @@ class PostgresProductRepository : public domain::IProductRepository
     std::vector<domain::menu::Product> listPublicMenu() override;
     domain::menu::Product create(const domain::menu::Product &product) override;
     domain::menu::Product update(std::int64_t id, const domain::menu::Product &product) override;
+    void activate(std::int64_t id) override;
     void markUnavailable(std::int64_t id) override;
     void deactivate(std::int64_t id) override;
     void assignAddon(std::int64_t productId, std::int64_t addonId) override;
@@ -108,6 +109,8 @@ class PostgresOrderRepository : public domain::IOrderRepository
     std::optional<domain::orders::Order> findById(std::int64_t id) override;
     std::vector<domain::orders::Order> listKitchenActive() override;
     std::vector<domain::orders::Order> listHistory() override;
+    std::vector<domain::orders::Order> listActiveByTableId(std::int64_t tableId) override;
+    std::int64_t countActiveByTableId(std::int64_t tableId) override;
     std::vector<domain::orders::Order> searchOrders(const std::string &customerName,
                                                     const std::string &tableNumber,
                                                     const std::string &status) override;

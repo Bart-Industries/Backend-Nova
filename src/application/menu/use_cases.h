@@ -60,6 +60,16 @@ class MarkProductUnavailableUseCase
     domain::IProductRepository &repository_;
 };
 
+class ActivateProductUseCase
+{
+  public:
+    explicit ActivateProductUseCase(domain::IProductRepository &repository);
+    void execute(std::int64_t id);
+
+  private:
+    domain::IProductRepository &repository_;
+};
+
 class DeactivateProductUseCase
 {
   public:

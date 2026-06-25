@@ -12,6 +12,7 @@ class ApiController : public drogon::HttpController<ApiController>
     ADD_METHOD_TO(ApiController::login, "/api/v1/auth/login", drogon::Post);
     ADD_METHOD_TO(ApiController::me, "/api/v1/auth/me", drogon::Get, "starcafe::infrastructure::security::JwtAuthFilter");
     ADD_METHOD_TO(ApiController::getTableByQr, "/api/v1/tables/qr/{1}", drogon::Get);
+    ADD_METHOD_TO(ApiController::getPublicTableSession, "/api/v1/public/tables/{1}/session", drogon::Get);
     ADD_METHOD_TO(ApiController::getPublicMenu, "/api/v1/public/menu", drogon::Get);
     ADD_METHOD_TO(ApiController::createOrderFromTable, "/api/v1/public/tables/{1}/orders", drogon::Post);
     ADD_METHOD_TO(ApiController::getOrderStatus, "/api/v1/public/orders/{1}/status", drogon::Get);
@@ -31,6 +32,7 @@ class ApiController : public drogon::HttpController<ApiController>
     ADD_METHOD_TO(ApiController::listProducts, "/api/v1/admin/products", drogon::Get, "starcafe::infrastructure::security::AdminFilter");
     ADD_METHOD_TO(ApiController::createProduct, "/api/v1/admin/products", drogon::Post, "starcafe::infrastructure::security::AdminFilter");
     ADD_METHOD_TO(ApiController::updateProduct, "/api/v1/admin/products/{1}", drogon::Patch, "starcafe::infrastructure::security::AdminFilter");
+    ADD_METHOD_TO(ApiController::activateProduct, "/api/v1/admin/products/{1}/activate", drogon::Patch, "starcafe::infrastructure::security::AdminFilter");
     ADD_METHOD_TO(ApiController::markProductUnavailable, "/api/v1/admin/products/{1}/unavailable", drogon::Patch, "starcafe::infrastructure::security::AdminFilter");
     ADD_METHOD_TO(ApiController::deactivateProduct, "/api/v1/admin/products/{1}/deactivate", drogon::Patch, "starcafe::infrastructure::security::AdminFilter");
     ADD_METHOD_TO(ApiController::listAddons, "/api/v1/admin/addons", drogon::Get, "starcafe::infrastructure::security::AdminFilter");
@@ -47,6 +49,7 @@ class ApiController : public drogon::HttpController<ApiController>
     void login(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
     void me(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
     void getTableByQr(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string qrToken);
+    void getPublicTableSession(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string qrToken);
     void getPublicMenu(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
     void createOrderFromTable(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string qrToken);
     void getOrderStatus(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string orderId);
@@ -66,6 +69,7 @@ class ApiController : public drogon::HttpController<ApiController>
     void listProducts(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
     void createProduct(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
     void updateProduct(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string id);
+    void activateProduct(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string id);
     void markProductUnavailable(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string id);
     void deactivateProduct(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string id);
     void listAddons(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback);
