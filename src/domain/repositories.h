@@ -42,6 +42,7 @@ class IProductRepository
     virtual std::vector<menu::Product> listPublicMenu() = 0;
     virtual menu::Product create(const menu::Product &product) = 0;
     virtual menu::Product update(std::int64_t id, const menu::Product &product) = 0;
+    virtual void activate(std::int64_t id) = 0;
     virtual void markUnavailable(std::int64_t id) = 0;
     virtual void deactivate(std::int64_t id) = 0;
     virtual void assignAddon(std::int64_t productId, std::int64_t addonId) = 0;
@@ -86,6 +87,8 @@ class IOrderRepository
     virtual std::optional<orders::Order> findById(std::int64_t id) = 0;
     virtual std::vector<orders::Order> listKitchenActive() = 0;
     virtual std::vector<orders::Order> listHistory() = 0;
+    virtual std::vector<orders::Order> listActiveByTableId(std::int64_t tableId) = 0;
+    virtual std::int64_t countActiveByTableId(std::int64_t tableId) = 0;
     virtual std::vector<orders::Order> searchOrders(const std::string &customerName,
                                                     const std::string &tableNumber,
                                                     const std::string &status) = 0;

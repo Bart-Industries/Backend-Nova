@@ -3,6 +3,11 @@
 
 namespace starcafe::application::orders
 {
+namespace
+{
+constexpr std::int64_t kMaxActiveOrdersPerTable = 3;
+}
+
 CreateOrderFromTableUseCase::CreateOrderFromTableUseCase(domain::IRestaurantTableRepository &tableRepository,
                                                          domain::IProductRepository &productRepository,
                                                          domain::IAddonRepository &addonRepository,
@@ -28,6 +33,10 @@ domain::orders::Order CreateOrderFromTableUseCase::execute(const CreateOrderFrom
     if (command.items.empty())
     {
         throw domain::DomainError("Order must include at least one item");
+    }
+    if (orderRepository_.countActiveByTableId(table->id) >= kMaxActiveOrdersPerTable)
+    {
+        throw domain::DomainError("This table already has the maximum number of active orders");
     }
 
     domain::orders::Order order;
@@ -86,6 +95,32 @@ domain::orders::Order GetOrderStatusForCustomerUseCase::execute(std::int64_t ord
         throw domain::DomainError("Order not found");
     }
     return *order;
+}
+
+GetPublicTableSessionUseCase::GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository, domain::IOrderRepository &orderRepository)
+    : tableRepository_(tableRepository), orderRepository_(orderRepository)
+{
+}
+
+PublicTableSession GetPublicTableSessionUseCase::execute(const std::string &qrToken)
+{
+    const auto table = tableRepository_.findByQrToken(qrToken);
+    if (!table.has_value() || !table->isActive)
+    {
+        throw domain::DomainError("Invalid table QR token");
+    }
+
+    PublicTableSession session;
+    session.table = *table;
+    session.activeOrders = orderRepository_.listActiveByTableId(table->id);
+    session.activeOrdersCount = static_cast<std::int64_t>(session.activeOrders.size());
+    session.remainingSlots = kMaxActiveOrdersPerTable - session.activeOrdersCount;
+    if (session.remainingSlots < 0)
+    {
+        session.remainingSlots = 0;
+    }
+    session.canCreateMoreOrders = session.activeOrdersCount < kMaxActiveOrdersPerTable;
+    return session;
 }
 
 GetKitchenOrdersUseCase::GetKitchenOrdersUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}

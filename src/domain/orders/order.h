@@ -37,5 +37,6 @@ struct Order
     double total{};
     std::vector<OrderItem> items;
     std::string createdAt;
+    std::string updatedAt;
 };
 }  // namespace starcafe::domain::orders

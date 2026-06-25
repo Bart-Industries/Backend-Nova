@@ -5,6 +5,15 @@
 
 namespace starcafe::application::orders
 {
+struct PublicTableSession
+{
+    domain::tables::RestaurantTable table;
+    std::vector<domain::orders::Order> activeOrders;
+    bool canCreateMoreOrders{true};
+    std::int64_t activeOrdersCount{};
+    std::int64_t remainingSlots{};
+};
+
 class CreateOrderFromTableUseCase
 {
   public:
@@ -28,6 +37,17 @@ class GetOrderStatusForCustomerUseCase
     domain::orders::Order execute(std::int64_t orderId);
 
   private:
+    domain::IOrderRepository &orderRepository_;
+};
+
+class GetPublicTableSessionUseCase
+{
+  public:
+    GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository, domain::IOrderRepository &orderRepository);
+    PublicTableSession execute(const std::string &qrToken);
+
+  private:
+    domain::IRestaurantTableRepository &tableRepository_;
     domain::IOrderRepository &orderRepository_;
 };
 

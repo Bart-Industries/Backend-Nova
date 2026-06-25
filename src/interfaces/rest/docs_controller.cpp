@@ -232,6 +232,11 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addPathParameter(paths["/api/v1/tables/qr/{qrToken}"]["get"], "qrToken", "Token del QR");
     attachDefaultResponses(paths["/api/v1/tables/qr/{qrToken}"]["get"]);
 
+    paths["/api/v1/public/tables/{qrToken}/session"]["get"]["summary"] = "Obtener mesa y pedidos activos por QR";
+    addTag(paths["/api/v1/public/tables/{qrToken}/session"]["get"], "Public");
+    addPathParameter(paths["/api/v1/public/tables/{qrToken}/session"]["get"], "qrToken", "Token del QR");
+    attachDefaultResponses(paths["/api/v1/public/tables/{qrToken}/session"]["get"]);
+
     paths["/api/v1/public/menu"]["get"]["summary"] = "Listar menu publico";
     addTag(paths["/api/v1/public/menu"]["get"], "Public");
     attachDefaultResponses(paths["/api/v1/public/menu"]["get"]);
@@ -342,6 +347,12 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addJsonRequestBody(paths["/api/v1/admin/products/{id}"]["patch"],
                        {{"categoryId", "integer"}, {"name", "string"}, {"description", "string"}, {"price", "number"}, {"isAvailable", "boolean"}});
     attachDefaultResponses(paths["/api/v1/admin/products/{id}"]["patch"]);
+
+    paths["/api/v1/admin/products/{id}/activate"]["patch"]["summary"] = "Reactivar producto";
+    addTag(paths["/api/v1/admin/products/{id}/activate"]["patch"], "Admin Products");
+    paths["/api/v1/admin/products/{id}/activate"]["patch"]["security"] = bearerSecurity();
+    addPathParameter(paths["/api/v1/admin/products/{id}/activate"]["patch"], "id", "Id del producto");
+    attachDefaultResponses(paths["/api/v1/admin/products/{id}/activate"]["patch"]);
 
     paths["/api/v1/admin/products/{id}/unavailable"]["patch"]["summary"] = "Marcar producto no disponible";
     addTag(paths["/api/v1/admin/products/{id}/unavailable"]["patch"], "Admin Products");

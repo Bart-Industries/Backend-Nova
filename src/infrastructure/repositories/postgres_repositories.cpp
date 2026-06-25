@@ -91,6 +91,14 @@ domain::orders::Order mapOrderBase(const Row &row)
     order.status = domain::orderStatusFromString(row["status"].as<std::string>());
     order.total = row["total"].as<double>();
     order.createdAt = row["created_at"].as<std::string>();
+    try
+    {
+        order.updatedAt = row["updated_at"].as<std::string>();
+    }
+    catch (const std::exception &)
+    {
+        order.updatedAt = order.createdAt;
+    }
     return order;
 }
 }  // namespace
@@ -380,6 +388,7 @@ domain::menu::Product PostgresProductRepository::update(std::int64_t id, const d
     updated.image = productImageRepository_.findMainByProductId(updated.id);
     return updated;
 }
+void PostgresProductRepository::activate(std::int64_t id) { db_->execSqlSync("update products set is_active = true where id = $1", id); }
 void PostgresProductRepository::markUnavailable(std::int64_t id) { db_->execSqlSync("update products set is_available = false where id = $1", id); }
 void PostgresProductRepository::deactivate(std::int64_t id) { db_->execSqlSync("update products set is_active = false where id = $1", id); }
 void PostgresProductRepository::assignAddon(std::int64_t productId, std::int64_t addonId)
@@ -464,6 +473,7 @@ domain::orders::Order PostgresOrderRepository::create(const domain::orders::Orde
         created.status = domain::orderStatusFromString(orderResult[0]["status"].as<std::string>());
         created.total = orderResult[0]["total"].as<double>();
         created.createdAt = orderResult[0]["created_at"].as<std::string>();
+        created.updatedAt = created.createdAt;
 
         for (const auto &item : order.items)
         {
@@ -489,7 +499,7 @@ domain::orders::Order PostgresOrderRepository::create(const domain::orders::Orde
 }
 std::optional<domain::orders::Order> PostgresOrderRepository::findById(std::int64_t id)
 {
-    const auto result = db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at from orders o inner join restaurant_tables rt on rt.id = o.table_id where o.id = $1 limit 1", id);
+    const auto result = db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at, o.updated_at from orders o inner join restaurant_tables rt on rt.id = o.table_id where o.id = $1 limit 1", id);
     if (result.empty())
         return std::nullopt;
     auto order = mapOrderBase(result[0]);
@@ -499,7 +509,7 @@ std::optional<domain::orders::Order> PostgresOrderRepository::findById(std::int6
 std::vector<domain::orders::Order> PostgresOrderRepository::listKitchenActive()
 {
     std::vector<domain::orders::Order> orders;
-    for (const auto &row : db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at from orders o inner join restaurant_tables rt on rt.id = o.table_id where o.status in ('PENDING', 'PREPARING', 'READY') order by o.created_at asc"))
+    for (const auto &row : db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at, o.updated_at from orders o inner join restaurant_tables rt on rt.id = o.table_id where o.status in ('PENDING', 'PREPARING', 'READY') order by o.updated_at desc, o.created_at desc"))
     {
         auto order = mapOrderBase(row);
         order.items = loadItems(order.id);
@@ -510,7 +520,7 @@ std::vector<domain::orders::Order> PostgresOrderRepository::listKitchenActive()
 std::vector<domain::orders::Order> PostgresOrderRepository::listHistory()
 {
     std::vector<domain::orders::Order> orders;
-    for (const auto &row : db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at from orders o inner join restaurant_tables rt on rt.id = o.table_id order by o.created_at desc"))
+    for (const auto &row : db_->execSqlSync("select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at, o.updated_at from orders o inner join restaurant_tables rt on rt.id = o.table_id order by o.updated_at desc, o.created_at desc"))
     {
         auto order = mapOrderBase(row);
         order.items = loadItems(order.id);
@@ -518,18 +528,41 @@ std::vector<domain::orders::Order> PostgresOrderRepository::listHistory()
     }
     return orders;
 }
+std::vector<domain::orders::Order> PostgresOrderRepository::listActiveByTableId(std::int64_t tableId)
+{
+    std::vector<domain::orders::Order> orders;
+    for (const auto &row : db_->execSqlSync(
+             "select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at, o.updated_at "
+             "from orders o inner join restaurant_tables rt on rt.id = o.table_id "
+             "where o.table_id = $1 and o.status in ('PENDING', 'PREPARING', 'READY') "
+             "order by o.updated_at desc, o.created_at desc",
+             tableId))
+    {
+        auto order = mapOrderBase(row);
+        order.items = loadItems(order.id);
+        orders.push_back(order);
+    }
+    return orders;
+}
+std::int64_t PostgresOrderRepository::countActiveByTableId(std::int64_t tableId)
+{
+    const auto result = db_->execSqlSync(
+        "select count(*) as count from orders where table_id = $1 and status in ('PENDING', 'PREPARING', 'READY')",
+        tableId);
+    return result[0]["count"].as<std::int64_t>();
+}
 std::vector<domain::orders::Order> PostgresOrderRepository::searchOrders(const std::string &customerName,
                                                                           const std::string &tableNumber,
                                                                           const std::string &status)
 {
     std::vector<domain::orders::Order> orders;
     auto result = db_->execSqlSync(
-        "select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at "
+        "select o.id, o.table_id, rt.table_number, o.customer_name, o.status, o.total, o.created_at, o.updated_at "
         "from orders o inner join restaurant_tables rt on rt.id = o.table_id "
         "where ($1 = '' or lower(o.customer_name) like lower('%' || $1 || '%')) "
         "and ($2 = '' or cast(rt.table_number as text) = $2) "
         "and ($3 = '' or o.status = cast($3 as order_status)) "
-        "order by o.created_at desc",
+        "order by o.updated_at desc, o.created_at desc",
         customerName,
         tableNumber,
         status);

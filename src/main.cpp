@@ -43,6 +43,7 @@ int main()
     application::menu::ListCategoriesUseCase listCategories(categoryRepository);
     application::menu::CreateProductUseCase createProduct(productRepository);
     application::menu::UpdateProductUseCase updateProduct(productRepository);
+    application::menu::ActivateProductUseCase activateProduct(productRepository);
     application::menu::MarkProductUnavailableUseCase markProductUnavailable(productRepository);
     application::menu::DeactivateProductUseCase deactivateProduct(productRepository);
     application::menu::CreateAddonUseCase createAddon(addonRepository);
@@ -62,6 +63,7 @@ int main()
     application::tables::ListTablesUseCase listTables(tableRepository);
     application::tables::DeactivateTableUseCase deactivateTable(tableRepository);
     application::orders::CreateOrderFromTableUseCase createOrderFromTable(tableRepository, productRepository, addonRepository, orderRepository);
+    application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository);
     application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository);
     application::orders::GetKitchenOrdersUseCase getKitchenOrders(orderRepository);
     application::orders::StartPreparingOrderUseCase startPreparingOrder(orderRepository);
@@ -87,6 +89,7 @@ int main()
     registry.listCategories = &listCategories;
     registry.createProduct = &createProduct;
     registry.updateProduct = &updateProduct;
+    registry.activateProduct = &activateProduct;
     registry.markProductUnavailable = &markProductUnavailable;
     registry.deactivateProduct = &deactivateProduct;
     registry.createAddon = &createAddon;
@@ -102,6 +105,7 @@ int main()
     registry.listTables = &listTables;
     registry.deactivateTable = &deactivateTable;
     registry.createOrderFromTable = &createOrderFromTable;
+    registry.getPublicTableSession = &getPublicTableSession;
     registry.getOrderStatus = &getOrderStatus;
     registry.getKitchenOrders = &getKitchenOrders;
     registry.startPreparingOrder = &startPreparingOrder;

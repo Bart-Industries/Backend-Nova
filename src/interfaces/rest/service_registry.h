@@ -24,6 +24,7 @@ struct ServiceRegistry
     application::menu::ListCategoriesUseCase *listCategories{};
     application::menu::CreateProductUseCase *createProduct{};
     application::menu::UpdateProductUseCase *updateProduct{};
+    application::menu::ActivateProductUseCase *activateProduct{};
     application::menu::MarkProductUnavailableUseCase *markProductUnavailable{};
     application::menu::DeactivateProductUseCase *deactivateProduct{};
     application::menu::CreateAddonUseCase *createAddon{};
@@ -39,6 +40,7 @@ struct ServiceRegistry
     application::tables::ListTablesUseCase *listTables{};
     application::tables::DeactivateTableUseCase *deactivateTable{};
     application::orders::CreateOrderFromTableUseCase *createOrderFromTable{};
+    application::orders::GetPublicTableSessionUseCase *getPublicTableSession{};
     application::orders::GetOrderStatusForCustomerUseCase *getOrderStatus{};
     application::orders::GetKitchenOrdersUseCase *getKitchenOrders{};
     application::orders::StartPreparingOrderUseCase *startPreparingOrder{};
