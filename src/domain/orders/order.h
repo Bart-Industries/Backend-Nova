@@ -30,6 +30,7 @@ struct OrderItem
 struct Order
 {
     std::int64_t id{};
+    std::int64_t businessId{};
     std::int64_t tableId{};
     int tableNumber{};
     std::string customerName;

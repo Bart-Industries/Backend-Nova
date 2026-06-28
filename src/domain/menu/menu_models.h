@@ -89,6 +89,7 @@ struct ProductImage
 struct Category
 {
     std::int64_t id{};
+    std::int64_t businessId{};
     std::string name;
     std::string description;
     bool isActive{true};
@@ -97,6 +98,7 @@ struct Category
 struct Addon
 {
     std::int64_t id{};
+    std::int64_t businessId{};
     std::string name;
     double price{};
     bool isActive{true};
@@ -105,6 +107,7 @@ struct Addon
 struct Product
 {
     std::int64_t id{};
+    std::int64_t businessId{};
     std::int64_t categoryId{};
     std::string name;
     std::string description;

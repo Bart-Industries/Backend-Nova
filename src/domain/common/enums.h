@@ -7,6 +7,7 @@ namespace starcafe::domain
 {
 enum class UserRole
 {
+    SUPER_ADMIN,
     ADMIN,
     KITCHEN
 };
@@ -37,6 +38,8 @@ inline std::string toString(UserRole role)
 {
     switch (role)
     {
+    case UserRole::SUPER_ADMIN:
+        return "SUPER_ADMIN";
     case UserRole::ADMIN:
         return "ADMIN";
     case UserRole::KITCHEN:
@@ -91,6 +94,8 @@ inline std::string toString(PaymentStatus status)
 
 inline UserRole userRoleFromString(const std::string &value)
 {
+    if (value == "SUPER_ADMIN")
+        return UserRole::SUPER_ADMIN;
     if (value == "ADMIN")
         return UserRole::ADMIN;
     if (value == "KITCHEN")

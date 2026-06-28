@@ -10,6 +10,7 @@ namespace starcafe::domain::payments
 struct Payment
 {
     std::int64_t id{};
+    std::int64_t businessId{};
     std::int64_t orderId{};
     double amount{};
     PaymentStatus status{PaymentStatus::PENDING};
