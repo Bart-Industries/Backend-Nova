@@ -3,18 +3,13 @@
 #include "application/common/dtos.h"
 #include "domain/repositories.h"
 
-namespace starcafe::infrastructure::storage
-{
-class FileStorageService;
-}
-
 namespace starcafe::application::menu
 {
 class CreateCategoryUseCase
 {
   public:
     explicit CreateCategoryUseCase(domain::ICategoryRepository &repository);
-    domain::menu::Category execute(const CreateCategoryCommand &command);
+    domain::menu::Category execute(std::int64_t businessId, const CreateCategoryCommand &command);
 
   private:
     domain::ICategoryRepository &repository_;
@@ -24,7 +19,7 @@ class ListCategoriesUseCase
 {
   public:
     explicit ListCategoriesUseCase(domain::ICategoryRepository &repository);
-    std::vector<domain::menu::Category> execute(bool onlyActive = true);
+    std::vector<domain::menu::Category> execute(std::int64_t businessId, bool onlyActive = true);
 
   private:
     domain::ICategoryRepository &repository_;
@@ -54,7 +49,7 @@ class MarkProductUnavailableUseCase
 {
   public:
     explicit MarkProductUnavailableUseCase(domain::IProductRepository &repository);
-    void execute(std::int64_t id);
+    void execute(std::int64_t businessId, std::int64_t id);
 
   private:
     domain::IProductRepository &repository_;
@@ -64,7 +59,7 @@ class ActivateProductUseCase
 {
   public:
     explicit ActivateProductUseCase(domain::IProductRepository &repository);
-    void execute(std::int64_t id);
+    void execute(std::int64_t businessId, std::int64_t id);
 
   private:
     domain::IProductRepository &repository_;
@@ -74,7 +69,7 @@ class DeactivateProductUseCase
 {
   public:
     explicit DeactivateProductUseCase(domain::IProductRepository &repository);
-    void execute(std::int64_t id);
+    void execute(std::int64_t businessId, std::int64_t id);
 
   private:
     domain::IProductRepository &repository_;
@@ -93,28 +88,30 @@ class CreateAddonUseCase
 class AssignAddonToProductUseCase
 {
   public:
-    explicit AssignAddonToProductUseCase(domain::IProductRepository &repository);
-    void execute(std::int64_t productId, std::int64_t addonId);
+    AssignAddonToProductUseCase(domain::IProductRepository &productRepository, domain::IAddonRepository &addonRepository);
+    void execute(std::int64_t businessId, std::int64_t productId, std::int64_t addonId);
 
   private:
-    domain::IProductRepository &repository_;
+    domain::IProductRepository &productRepository_;
+    domain::IAddonRepository &addonRepository_;
 };
 
 class GetPublicMenuUseCase
 {
   public:
-    explicit GetPublicMenuUseCase(domain::IProductRepository &repository);
-    std::vector<domain::menu::Product> execute();
+    GetPublicMenuUseCase(domain::IProductRepository &repository, domain::IBusinessRepository &businessRepository);
+    std::vector<domain::menu::Product> execute(const std::string &businessSlug);
 
   private:
     domain::IProductRepository &repository_;
+    domain::IBusinessRepository &businessRepository_;
 };
 
 class ListProductsUseCase
 {
   public:
     explicit ListProductsUseCase(domain::IProductRepository &repository);
-    std::vector<domain::menu::Product> execute(bool onlyActive = false);
+    std::vector<domain::menu::Product> execute(std::int64_t businessId, bool onlyActive = false);
 
   private:
     domain::IProductRepository &repository_;
@@ -127,7 +124,7 @@ class UploadProductImageUseCase
                               domain::IProductImageRepository &imageRepository,
                               infrastructure::storage::FileStorageService &fileStorageService,
                               std::int64_t maxFileBytes);
-    domain::menu::ProductImage execute(const UploadProductImageCommand &command);
+    domain::menu::ProductImage execute(std::int64_t businessId, const UploadProductImageCommand &command);
 
   private:
     domain::IProductRepository &productRepository_;
@@ -140,7 +137,7 @@ class ReplaceProductImageUseCase
 {
   public:
     explicit ReplaceProductImageUseCase(UploadProductImageUseCase &uploadUseCase);
-    domain::menu::ProductImage execute(const UploadProductImageCommand &command);
+    domain::menu::ProductImage execute(std::int64_t businessId, const UploadProductImageCommand &command);
 
   private:
     UploadProductImageUseCase &uploadUseCase_;
@@ -152,7 +149,7 @@ class DeleteProductImageUseCase
     DeleteProductImageUseCase(domain::IProductRepository &productRepository,
                               domain::IProductImageRepository &imageRepository,
                               infrastructure::storage::FileStorageService &fileStorageService);
-    void execute(std::int64_t productId, bool deletePhysicalFile);
+    void execute(std::int64_t businessId, std::int64_t productId, bool deletePhysicalFile);
 
   private:
     domain::IProductRepository &productRepository_;

@@ -15,7 +15,7 @@ domain::tables::RestaurantTable CreateTableUseCase::execute(const CreateTableCom
     {
         throw domain::DomainError("Table number must be greater than zero");
     }
-    return repository_.create({0, command.tableNumber, qrTokenService_.generateToken(), true});
+    return repository_.create({0, command.businessId, "", "", command.tableNumber, qrTokenService_.generateToken(), true});
 }
 
 GenerateQrTokenUseCase::GenerateQrTokenUseCase(domain::IRestaurantTableRepository &repository,
@@ -24,8 +24,13 @@ GenerateQrTokenUseCase::GenerateQrTokenUseCase(domain::IRestaurantTableRepositor
 {
 }
 
-domain::tables::RestaurantTable GenerateQrTokenUseCase::execute(std::int64_t tableId)
+domain::tables::RestaurantTable GenerateQrTokenUseCase::execute(std::int64_t businessId, std::int64_t tableId)
 {
+    const auto table = repository_.findById(tableId);
+    if (!table.has_value() || table->businessId != businessId)
+    {
+        throw domain::DomainError("Table not found");
+    }
     return repository_.updateQrToken(tableId, qrTokenService_.generateToken());
 }
 
@@ -41,8 +46,16 @@ domain::tables::RestaurantTable GetTableByQrTokenUseCase::execute(const std::str
 }
 
 ListTablesUseCase::ListTablesUseCase(domain::IRestaurantTableRepository &repository) : repository_(repository) {}
-std::vector<domain::tables::RestaurantTable> ListTablesUseCase::execute() { return repository_.listActive(); }
+std::vector<domain::tables::RestaurantTable> ListTablesUseCase::execute(std::int64_t businessId) { return repository_.listActive(businessId); }
 
 DeactivateTableUseCase::DeactivateTableUseCase(domain::IRestaurantTableRepository &repository) : repository_(repository) {}
-void DeactivateTableUseCase::execute(std::int64_t id) { repository_.deactivate(id); }
+void DeactivateTableUseCase::execute(std::int64_t businessId, std::int64_t id)
+{
+    const auto table = repository_.findById(id);
+    if (!table.has_value() || table->businessId != businessId)
+    {
+        throw domain::DomainError("Table not found");
+    }
+    repository_.deactivate(id);
+}
 }  // namespace starcafe::application::tables
