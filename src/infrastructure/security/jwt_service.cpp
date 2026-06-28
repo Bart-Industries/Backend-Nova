@@ -52,6 +52,7 @@ JwtService::JwtService(std::string secret, std::int64_t expiresInSeconds)
 }
 
 std::string JwtService::createToken(std::int64_t userId,
+                                    std::optional<std::int64_t> businessId,
                                     const std::string &name,
                                     const std::string &email,
                                     domain::UserRole role) const
@@ -64,6 +65,10 @@ std::string JwtService::createToken(std::int64_t userId,
 
     Json::Value payload;
     payload["sub"] = Json::Int64(userId);
+    if (businessId.has_value())
+    {
+        payload["businessId"] = Json::Int64(*businessId);
+    }
     payload["name"] = name;
     payload["email"] = email;
     payload["role"] = domain::toString(role);
@@ -114,6 +119,10 @@ std::optional<JwtClaims> JwtService::verify(const std::string &token) const
 
     JwtClaims claims;
     claims.userId = payload["sub"].asInt64();
+    if (!payload["businessId"].isNull())
+    {
+        claims.businessId = payload["businessId"].asInt64();
+    }
     claims.name = payload["name"].asString();
     claims.email = payload["email"].asString();
     claims.role = payload["role"].asString();

@@ -56,7 +56,7 @@ void AdminFilter::doFilter(const drogon::HttpRequestPtr &req,
     {
         return fcb(unauthorized("Invalid or missing bearer token"));
     }
-    if (claims->role != "ADMIN")
+    if (claims->role != "ADMIN" && claims->role != "SUPER_ADMIN")
     {
         return fcb(unauthorized("Admin role required"));
     }
@@ -72,7 +72,7 @@ void KitchenFilter::doFilter(const drogon::HttpRequestPtr &req,
     {
         return fcb(unauthorized("Invalid or missing bearer token"));
     }
-    if (claims->role != "KITCHEN" && claims->role != "ADMIN")
+    if (claims->role != "KITCHEN" && claims->role != "ADMIN" && claims->role != "SUPER_ADMIN")
     {
         return fcb(unauthorized("Kitchen or admin role required"));
     }
