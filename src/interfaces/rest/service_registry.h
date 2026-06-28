@@ -1,5 +1,6 @@
 #pragma once
 
+#include "application/businesses/use_cases.h"
 #include "application/identity/use_cases.h"
 #include "application/menu/use_cases.h"
 #include "application/orders/use_cases.h"
@@ -11,12 +12,16 @@ namespace starcafe::interfaces::rest
 {
 struct ServiceRegistry
 {
+    domain::IBusinessRepository *businessRepository{};
     domain::IUserRepository *userRepository{};
     domain::IProductRepository *productRepository{};
     domain::IAddonRepository *addonRepository{};
     domain::IProductImageRepository *productImageRepository{};
     infrastructure::storage::FileStorageService *fileStorageService{};
+    std::string frontendBaseUrl;
     std::string publicProductFilesBaseUrl;
+    application::businesses::CreateBusinessUseCase *createBusiness{};
+    application::businesses::ListBusinessesUseCase *listBusinesses{};
     application::identity::RegisterUserUseCase *registerUser{};
     application::identity::LoginUseCase *login{};
     application::identity::GetCurrentUserUseCase *getCurrentUser{};

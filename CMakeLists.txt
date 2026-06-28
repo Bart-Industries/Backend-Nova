@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(StarCafeBackend LANGUAGES CXX)
+project(NovaBackend LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,8 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(Drogon CONFIG REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-add_executable(starcafe
+add_executable(nova
     src/main.cpp
+    src/application/businesses/use_cases.cpp
     src/application/identity/use_cases.cpp
     src/application/menu/use_cases.cpp
     src/application/tables/use_cases.cpp
@@ -29,11 +30,11 @@ add_executable(starcafe
     src/interfaces/rest/product_image_controller.cpp
 )
 
-target_include_directories(starcafe PRIVATE src)
-target_link_libraries(starcafe PRIVATE Drogon::Drogon OpenSSL::Crypto)
+target_include_directories(nova PRIVATE src)
+target_link_libraries(nova PRIVATE Drogon::Drogon OpenSSL::Crypto)
 
 if(MSVC)
-    target_compile_options(starcafe PRIVATE /W4 /permissive-)
+    target_compile_options(nova PRIVATE /W4 /permissive-)
 else()
-    target_compile_options(starcafe PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(nova PRIVATE -Wall -Wextra -Wpedantic)
 endif()

@@ -140,7 +140,7 @@ void DocsController::swaggerUi(const drogon::HttpRequestPtr &, std::function<voi
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>StarCafe API Docs</title>
+    <title>Nova API Docs</title>
     <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
     <style>
       body { margin: 0; background: #faf7f0; }
@@ -176,33 +176,35 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
 {
     Json::Value root;
     root["openapi"] = "3.0.3";
-    root["info"]["title"] = "StarCafe API";
-    root["info"]["version"] = "1.0.0";
-    root["info"]["description"] = "Documentacion para pruebas del backend de StarCafe.";
-    root["tags"][0]["name"] = "Auth";
-    root["tags"][0]["description"] = "Autenticacion y perfil del usuario autenticado.";
-    root["tags"][1]["name"] = "Public";
-    root["tags"][1]["description"] = "Endpoints publicos para clientes que ingresan por QR.";
-    root["tags"][2]["name"] = "Kitchen";
-    root["tags"][2]["description"] = "Flujo operativo de cocina.";
-    root["tags"][3]["name"] = "Admin Users";
-    root["tags"][3]["description"] = "Gestion de usuarios administrativos y de cocina.";
-    root["tags"][4]["name"] = "Admin Tables";
-    root["tags"][4]["description"] = "Gestion de mesas y QR.";
-    root["tags"][5]["name"] = "Admin Categories";
-    root["tags"][5]["description"] = "Gestion de categorias del menu.";
-    root["tags"][6]["name"] = "Admin Products";
-    root["tags"][6]["description"] = "Gestion de productos del menu.";
-    root["tags"][7]["name"] = "Admin Product Images";
-    root["tags"][7]["description"] = "Carga, reemplazo y eliminacion de imagenes de producto.";
-    root["tags"][8]["name"] = "Admin Addons";
-    root["tags"][8]["description"] = "Gestion de adicionales y asignaciones a productos.";
-    root["tags"][9]["name"] = "Admin Orders";
-    root["tags"][9]["description"] = "Supervision y acciones administrativas sobre pedidos.";
-    root["tags"][10]["name"] = "Cashier";
-    root["tags"][10]["description"] = "Busqueda y pago de pedidos en caja.";
-    root["tags"][11]["name"] = "Uploads";
-    root["tags"][11]["description"] = "Entrega publica de archivos e imagenes.";
+    root["info"]["title"] = "Nova API";
+    root["info"]["version"] = "2.0.0";
+    root["info"]["description"] = "Documentacion para pruebas del backend multi-cafeteria de Nova.";
+    root["tags"][0]["name"] = "Super Admin Businesses";
+    root["tags"][0]["description"] = "Gestion global de cafeterias dentro de la plataforma Nova.";
+    root["tags"][1]["name"] = "Auth";
+    root["tags"][1]["description"] = "Autenticacion y perfil del usuario autenticado.";
+    root["tags"][2]["name"] = "Public";
+    root["tags"][2]["description"] = "Endpoints publicos para clientes que ingresan por QR.";
+    root["tags"][3]["name"] = "Kitchen";
+    root["tags"][3]["description"] = "Flujo operativo de cocina.";
+    root["tags"][4]["name"] = "Admin Users";
+    root["tags"][4]["description"] = "Gestion de usuarios administrativos y de cocina por cafeteria.";
+    root["tags"][5]["name"] = "Admin Tables";
+    root["tags"][5]["description"] = "Gestion de mesas y QR por cafeteria.";
+    root["tags"][6]["name"] = "Admin Categories";
+    root["tags"][6]["description"] = "Gestion de categorias del menu por cafeteria.";
+    root["tags"][7]["name"] = "Admin Products";
+    root["tags"][7]["description"] = "Gestion de productos del menu por cafeteria.";
+    root["tags"][8]["name"] = "Admin Product Images";
+    root["tags"][8]["description"] = "Carga, reemplazo y eliminacion de imagenes de producto.";
+    root["tags"][9]["name"] = "Admin Addons";
+    root["tags"][9]["description"] = "Gestion de adicionales y asignaciones a productos.";
+    root["tags"][10]["name"] = "Admin Orders";
+    root["tags"][10]["description"] = "Supervision y acciones administrativas sobre pedidos.";
+    root["tags"][11]["name"] = "Cashier";
+    root["tags"][11]["description"] = "Busqueda y pago de pedidos en caja.";
+    root["tags"][12]["name"] = "Uploads";
+    root["tags"][12]["description"] = "Entrega publica de archivos e imagenes.";
 
     root["components"]["securitySchemes"]["bearerAuth"]["type"] = "http";
     root["components"]["securitySchemes"]["bearerAuth"]["scheme"] = "bearer";
@@ -210,10 +212,24 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
 
     auto &paths = root["paths"];
 
+    paths["/api/v1/super-admin/businesses"]["get"]["summary"] = "Listar cafeterias";
+    addTag(paths["/api/v1/super-admin/businesses"]["get"], "Super Admin Businesses");
+    paths["/api/v1/super-admin/businesses"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/super-admin/businesses"]["get"], "includeInactive", "Incluir cafeterias inactivas");
+    attachDefaultResponses(paths["/api/v1/super-admin/businesses"]["get"]);
+
+    paths["/api/v1/super-admin/businesses"]["post"]["summary"] = "Crear cafeteria";
+    addTag(paths["/api/v1/super-admin/businesses"]["post"], "Super Admin Businesses");
+    paths["/api/v1/super-admin/businesses"]["post"]["security"] = bearerSecurity();
+    addJsonRequestBody(paths["/api/v1/super-admin/businesses"]["post"],
+                       {{"name", "string"}, {"slug", "string"}, {"logoUrl", "string"}, {"primaryColor", "string"}},
+                       {"name", "slug"});
+    attachDefaultResponses(paths["/api/v1/super-admin/businesses"]["post"]);
+
     paths["/api/v1/auth/register"]["post"]["summary"] = "Registrar usuario";
     addTag(paths["/api/v1/auth/register"]["post"], "Auth");
     addJsonRequestBody(paths["/api/v1/auth/register"]["post"],
-                       {{"name", "string"}, {"email", "string"}, {"password", "string"}, {"role", "string"}},
+                       {{"name", "string"}, {"email", "string"}, {"password", "string"}, {"role", "string"}, {"businessId", "integer"}},
                        {"name", "email", "password", "role"});
     attachDefaultResponses(paths["/api/v1/auth/register"]["post"]);
 
@@ -239,6 +255,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
 
     paths["/api/v1/public/menu"]["get"]["summary"] = "Listar menu publico";
     addTag(paths["/api/v1/public/menu"]["get"], "Public");
+    addQueryParameter(paths["/api/v1/public/menu"]["get"], "businessSlug", "Slug de la cafeteria");
     attachDefaultResponses(paths["/api/v1/public/menu"]["get"]);
 
     paths["/api/v1/public/tables/{qrToken}/orders"]["post"]["summary"] = "Crear pedido desde mesa";
@@ -283,13 +300,14 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/users"]["get"]["summary"] = "Listar usuarios";
     addTag(paths["/api/v1/admin/users"]["get"], "Admin Users");
     paths["/api/v1/admin/users"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/users"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     attachDefaultResponses(paths["/api/v1/admin/users"]["get"]);
 
     paths["/api/v1/admin/users"]["post"]["summary"] = "Crear usuario";
     addTag(paths["/api/v1/admin/users"]["post"], "Admin Users");
     paths["/api/v1/admin/users"]["post"]["security"] = bearerSecurity();
     addJsonRequestBody(paths["/api/v1/admin/users"]["post"],
-                       {{"name", "string"}, {"email", "string"}, {"password", "string"}, {"role", "string"}},
+                       {{"name", "string"}, {"email", "string"}, {"password", "string"}, {"role", "string"}, {"businessId", "integer"}},
                        {"name", "email", "password", "role"});
     attachDefaultResponses(paths["/api/v1/admin/users"]["post"]);
 
@@ -302,13 +320,20 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/tables"]["get"]["summary"] = "Listar mesas";
     addTag(paths["/api/v1/admin/tables"]["get"], "Admin Tables");
     paths["/api/v1/admin/tables"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/tables"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     attachDefaultResponses(paths["/api/v1/admin/tables"]["get"]);
 
     paths["/api/v1/admin/tables"]["post"]["summary"] = "Crear mesa";
     addTag(paths["/api/v1/admin/tables"]["post"], "Admin Tables");
     paths["/api/v1/admin/tables"]["post"]["security"] = bearerSecurity();
-    addJsonRequestBody(paths["/api/v1/admin/tables"]["post"], {{"tableNumber", "integer"}}, {"tableNumber"});
+    addJsonRequestBody(paths["/api/v1/admin/tables"]["post"], {{"tableNumber", "integer"}, {"businessId", "integer"}}, {"tableNumber"});
     attachDefaultResponses(paths["/api/v1/admin/tables"]["post"]);
+
+    paths["/api/v1/admin/tables/{id}/regenerate-qr"]["patch"]["summary"] = "Regenerar QR de mesa";
+    addTag(paths["/api/v1/admin/tables/{id}/regenerate-qr"]["patch"], "Admin Tables");
+    paths["/api/v1/admin/tables/{id}/regenerate-qr"]["patch"]["security"] = bearerSecurity();
+    addPathParameter(paths["/api/v1/admin/tables/{id}/regenerate-qr"]["patch"], "id", "Id de la mesa");
+    attachDefaultResponses(paths["/api/v1/admin/tables/{id}/regenerate-qr"]["patch"]);
 
     paths["/api/v1/admin/tables/{id}/deactivate"]["patch"]["summary"] = "Desactivar mesa";
     addTag(paths["/api/v1/admin/tables/{id}/deactivate"]["patch"], "Admin Tables");
@@ -319,24 +344,28 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/categories"]["get"]["summary"] = "Listar categorias";
     addTag(paths["/api/v1/admin/categories"]["get"], "Admin Categories");
     paths["/api/v1/admin/categories"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/categories"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
+    addQueryParameter(paths["/api/v1/admin/categories"]["get"], "includeInactive", "Incluir categorias inactivas");
     attachDefaultResponses(paths["/api/v1/admin/categories"]["get"]);
 
     paths["/api/v1/admin/categories"]["post"]["summary"] = "Crear categoria";
     addTag(paths["/api/v1/admin/categories"]["post"], "Admin Categories");
     paths["/api/v1/admin/categories"]["post"]["security"] = bearerSecurity();
-    addJsonRequestBody(paths["/api/v1/admin/categories"]["post"], {{"name", "string"}, {"description", "string"}}, {"name"});
+    addJsonRequestBody(paths["/api/v1/admin/categories"]["post"], {{"name", "string"}, {"description", "string"}, {"businessId", "integer"}}, {"name"});
     attachDefaultResponses(paths["/api/v1/admin/categories"]["post"]);
 
     paths["/api/v1/admin/products"]["get"]["summary"] = "Listar productos";
     addTag(paths["/api/v1/admin/products"]["get"], "Admin Products");
     paths["/api/v1/admin/products"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/products"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
+    addQueryParameter(paths["/api/v1/admin/products"]["get"], "includeInactive", "Incluir productos inactivos");
     attachDefaultResponses(paths["/api/v1/admin/products"]["get"]);
 
     paths["/api/v1/admin/products"]["post"]["summary"] = "Crear producto";
     addTag(paths["/api/v1/admin/products"]["post"], "Admin Products");
     paths["/api/v1/admin/products"]["post"]["security"] = bearerSecurity();
     addJsonRequestBody(paths["/api/v1/admin/products"]["post"],
-                       {{"categoryId", "integer"}, {"name", "string"}, {"description", "string"}, {"price", "number"}},
+                       {{"businessId", "integer"}, {"categoryId", "integer"}, {"name", "string"}, {"description", "string"}, {"price", "number"}},
                        {"categoryId", "name", "price"});
     attachDefaultResponses(paths["/api/v1/admin/products"]["post"]);
 
@@ -345,7 +374,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/products/{id}"]["patch"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/products/{id}"]["patch"], "id", "Id del producto");
     addJsonRequestBody(paths["/api/v1/admin/products/{id}"]["patch"],
-                       {{"categoryId", "integer"}, {"name", "string"}, {"description", "string"}, {"price", "number"}, {"isAvailable", "boolean"}});
+                       {{"businessId", "integer"}, {"categoryId", "integer"}, {"name", "string"}, {"description", "string"}, {"price", "number"}, {"isAvailable", "boolean"}});
     attachDefaultResponses(paths["/api/v1/admin/products/{id}"]["patch"]);
 
     paths["/api/v1/admin/products/{id}/activate"]["patch"]["summary"] = "Reactivar producto";
@@ -369,12 +398,14 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/addons"]["get"]["summary"] = "Listar addons";
     addTag(paths["/api/v1/admin/addons"]["get"], "Admin Addons");
     paths["/api/v1/admin/addons"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/addons"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
+    addQueryParameter(paths["/api/v1/admin/addons"]["get"], "includeInactive", "Incluir addons inactivos");
     attachDefaultResponses(paths["/api/v1/admin/addons"]["get"]);
 
     paths["/api/v1/admin/addons"]["post"]["summary"] = "Crear addon";
     addTag(paths["/api/v1/admin/addons"]["post"], "Admin Addons");
     paths["/api/v1/admin/addons"]["post"]["security"] = bearerSecurity();
-    addJsonRequestBody(paths["/api/v1/admin/addons"]["post"], {{"name", "string"}, {"price", "number"}}, {"name", "price"});
+    addJsonRequestBody(paths["/api/v1/admin/addons"]["post"], {{"businessId", "integer"}, {"name", "string"}, {"price", "number"}}, {"name", "price"});
     attachDefaultResponses(paths["/api/v1/admin/addons"]["post"]);
 
     paths["/api/v1/admin/products/{productId}/addons/{addonId}"]["post"]["summary"] = "Asignar addon a producto";
@@ -387,11 +418,13 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/orders"]["get"]["summary"] = "Listar pedidos admin";
     addTag(paths["/api/v1/admin/orders"]["get"], "Admin Orders");
     paths["/api/v1/admin/orders"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/orders"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     attachDefaultResponses(paths["/api/v1/admin/orders"]["get"]);
 
     paths["/api/v1/admin/orders/history"]["get"]["summary"] = "Historial de pedidos admin";
     addTag(paths["/api/v1/admin/orders/history"]["get"], "Admin Orders");
     paths["/api/v1/admin/orders/history"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/orders/history"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     attachDefaultResponses(paths["/api/v1/admin/orders/history"]["get"]);
 
     paths["/api/v1/admin/orders/{orderId}/cancel"]["patch"]["summary"] = "Cancelar pedido";
@@ -403,6 +436,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/cashier/orders/search"]["get"]["summary"] = "Buscar pedidos para caja";
     addTag(paths["/api/v1/admin/cashier/orders/search"]["get"], "Cashier");
     paths["/api/v1/admin/cashier/orders/search"]["get"]["security"] = bearerSecurity();
+    addQueryParameter(paths["/api/v1/admin/cashier/orders/search"]["get"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     addQueryParameter(paths["/api/v1/admin/cashier/orders/search"]["get"], "customerName", "Nombre del cliente");
     addQueryParameter(paths["/api/v1/admin/cashier/orders/search"]["get"], "tableNumber", "Numero de mesa");
     addQueryParameter(paths["/api/v1/admin/cashier/orders/search"]["get"], "status", "Estado del pedido");
@@ -412,13 +446,14 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addTag(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], "Cashier");
     paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], "orderId", "Id del pedido");
-    addJsonRequestBody(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], {{"amount", "number"}}, {"amount"});
+    addJsonRequestBody(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], {{"businessId", "integer"}, {"amount", "number"}}, {"amount"});
     attachDefaultResponses(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"]);
 
     paths["/api/v1/admin/products/{productId}/image"]["post"]["summary"] = "Subir imagen principal de producto";
     addTag(paths["/api/v1/admin/products/{productId}/image"]["post"], "Admin Product Images");
     paths["/api/v1/admin/products/{productId}/image"]["post"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/products/{productId}/image"]["post"], "productId", "Id del producto");
+    addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["post"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     addMultipartRequestBody(paths["/api/v1/admin/products/{productId}/image"]["post"]);
     attachDefaultResponses(paths["/api/v1/admin/products/{productId}/image"]["post"]);
 
@@ -426,6 +461,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addTag(paths["/api/v1/admin/products/{productId}/image"]["patch"], "Admin Product Images");
     paths["/api/v1/admin/products/{productId}/image"]["patch"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/products/{productId}/image"]["patch"], "productId", "Id del producto");
+    addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["patch"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     addMultipartRequestBody(paths["/api/v1/admin/products/{productId}/image"]["patch"]);
     attachDefaultResponses(paths["/api/v1/admin/products/{productId}/image"]["patch"]);
 
@@ -433,6 +469,8 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addTag(paths["/api/v1/admin/products/{productId}/image"]["delete"], "Admin Product Images");
     paths["/api/v1/admin/products/{productId}/image"]["delete"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/products/{productId}/image"]["delete"], "productId", "Id del producto");
+    addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["delete"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
+    addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["delete"], "deleteFile", "Eliminar tambien el archivo fisico");
     attachDefaultResponses(paths["/api/v1/admin/products/{productId}/image"]["delete"]);
 
     paths["/api/v1/uploads/products/{fileName}"]["get"]["summary"] = "Servir imagen de producto";

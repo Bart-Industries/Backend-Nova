@@ -1,3 +1,4 @@
+#include "application/businesses/use_cases.h"
 #include "application/identity/use_cases.h"
 #include "application/menu/use_cases.h"
 #include "application/orders/use_cases.h"
@@ -27,6 +28,7 @@ int main()
     infrastructure::qr::QrTokenService qrTokenService;
     infrastructure::storage::FileStorageService fileStorageService(config.uploadDir);
 
+    infrastructure::repositories::PostgresBusinessRepository businessRepository(db);
     infrastructure::repositories::PostgresUserRepository userRepository(db);
     infrastructure::repositories::PostgresCategoryRepository categoryRepository(db);
     infrastructure::repositories::PostgresAddonRepository addonRepository(db);
@@ -36,6 +38,8 @@ int main()
     infrastructure::repositories::PostgresOrderRepository orderRepository(db);
     infrastructure::repositories::PostgresPaymentRepository paymentRepository(db);
 
+    application::businesses::CreateBusinessUseCase createBusiness(businessRepository);
+    application::businesses::ListBusinessesUseCase listBusinesses(businessRepository);
     application::identity::RegisterUserUseCase registerUser(userRepository, passwordHasher);
     application::identity::LoginUseCase login(userRepository, passwordHasher, jwtService);
     application::identity::GetCurrentUserUseCase getCurrentUser(userRepository);
@@ -47,14 +51,10 @@ int main()
     application::menu::MarkProductUnavailableUseCase markProductUnavailable(productRepository);
     application::menu::DeactivateProductUseCase deactivateProduct(productRepository);
     application::menu::CreateAddonUseCase createAddon(addonRepository);
-    application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository);
-    application::menu::GetPublicMenuUseCase getPublicMenu(productRepository);
+    application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository, addonRepository);
+    application::menu::GetPublicMenuUseCase getPublicMenu(productRepository, businessRepository);
     application::menu::ListProductsUseCase listProducts(productRepository);
-    application::menu::UploadProductImageUseCase uploadProductImage(
-        productRepository,
-        productImageRepository,
-        fileStorageService,
-        config.maxProductImageSizeMb * 1024 * 1024);
+    application::menu::UploadProductImageUseCase uploadProductImage(productRepository, productImageRepository, fileStorageService, config.maxProductImageSizeMb * 1024 * 1024);
     application::menu::ReplaceProductImageUseCase replaceProductImage(uploadProductImage);
     application::menu::DeleteProductImageUseCase deleteProductImage(productRepository, productImageRepository, fileStorageService);
     application::tables::CreateTableUseCase createTable(tableRepository, qrTokenService);
@@ -76,12 +76,16 @@ int main()
     application::payments::ListPaymentsUseCase listPayments(paymentRepository);
 
     auto &registry = interfaces::rest::services();
+    registry.businessRepository = &businessRepository;
     registry.userRepository = &userRepository;
     registry.productRepository = &productRepository;
     registry.addonRepository = &addonRepository;
     registry.productImageRepository = &productImageRepository;
     registry.fileStorageService = &fileStorageService;
+    registry.frontendBaseUrl = config.frontendBaseUrl;
     registry.publicProductFilesBaseUrl = config.publicFilesBaseUrl + "/products";
+    registry.createBusiness = &createBusiness;
+    registry.listBusinesses = &listBusinesses;
     registry.registerUser = &registerUser;
     registry.login = &login;
     registry.getCurrentUser = &getCurrentUser;

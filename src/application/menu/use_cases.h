@@ -3,6 +3,11 @@
 #include "application/common/dtos.h"
 #include "domain/repositories.h"
 
+namespace starcafe::infrastructure::storage
+{
+class FileStorageService;
+}
+
 namespace starcafe::application::menu
 {
 class CreateCategoryUseCase
