@@ -55,7 +55,7 @@ class GetKitchenOrdersUseCase
 {
   public:
     explicit GetKitchenOrdersUseCase(domain::IOrderRepository &orderRepository);
-    std::vector<domain::orders::Order> execute();
+    std::vector<domain::orders::Order> execute(std::int64_t businessId);
 
   private:
     domain::IOrderRepository &orderRepository_;
@@ -65,7 +65,7 @@ class StartPreparingOrderUseCase
 {
   public:
     explicit StartPreparingOrderUseCase(domain::IOrderRepository &orderRepository);
-    void execute(std::int64_t orderId);
+    void execute(std::int64_t businessId, std::int64_t orderId);
 
   private:
     domain::IOrderRepository &orderRepository_;
@@ -75,7 +75,7 @@ class MarkOrderItemReadyUseCase
 {
   public:
     explicit MarkOrderItemReadyUseCase(domain::IOrderRepository &orderRepository);
-    void execute(std::int64_t itemId);
+    void execute(std::int64_t businessId, std::int64_t itemId);
 
   private:
     domain::IOrderRepository &orderRepository_;
@@ -85,7 +85,7 @@ class MarkOrderReadyUseCase
 {
   public:
     explicit MarkOrderReadyUseCase(domain::IOrderRepository &orderRepository);
-    void execute(std::int64_t orderId);
+    void execute(std::int64_t businessId, std::int64_t orderId);
 
   private:
     domain::IOrderRepository &orderRepository_;
@@ -95,7 +95,7 @@ class GetOrdersHistoryUseCase
 {
   public:
     explicit GetOrdersHistoryUseCase(domain::IOrderRepository &orderRepository);
-    std::vector<domain::orders::Order> execute();
+    std::vector<domain::orders::Order> execute(std::int64_t businessId);
 
   private:
     domain::IOrderRepository &orderRepository_;
@@ -105,7 +105,7 @@ class CancelOrderUseCase
 {
   public:
     explicit CancelOrderUseCase(domain::IOrderRepository &orderRepository);
-    void execute(std::int64_t orderId);
+    void execute(std::int64_t businessId, std::int64_t orderId);
 
   private:
     domain::IOrderRepository &orderRepository_;

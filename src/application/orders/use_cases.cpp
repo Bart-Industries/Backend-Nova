@@ -40,6 +40,7 @@ domain::orders::Order CreateOrderFromTableUseCase::execute(const CreateOrderFrom
     }
 
     domain::orders::Order order;
+    order.businessId = table->businessId;
     order.tableId = table->id;
     order.tableNumber = table->tableNumber;
     order.customerName = command.customerName;
@@ -49,7 +50,7 @@ domain::orders::Order CreateOrderFromTableUseCase::execute(const CreateOrderFrom
     for (const auto &inputItem : command.items)
     {
         const auto product = productRepository_.findById(inputItem.productId);
-        if (!product.has_value() || !product->isActive || !product->isAvailable)
+        if (!product.has_value() || product->businessId != table->businessId || !product->isActive || !product->isAvailable)
         {
             throw domain::DomainError("Product is not available");
         }
@@ -66,7 +67,7 @@ domain::orders::Order CreateOrderFromTableUseCase::execute(const CreateOrderFrom
         for (const auto addonId : inputItem.addonIds)
         {
             const auto addon = addonRepository_.findById(addonId);
-            if (!addon.has_value() || !addon->isActive)
+            if (!addon.has_value() || addon->businessId != table->businessId || !addon->isActive)
             {
                 throw domain::DomainError("Addon is not available");
             }
@@ -124,13 +125,17 @@ PublicTableSession GetPublicTableSessionUseCase::execute(const std::string &qrTo
 }
 
 GetKitchenOrdersUseCase::GetKitchenOrdersUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-std::vector<domain::orders::Order> GetKitchenOrdersUseCase::execute() { return orderRepository_.listKitchenActive(); }
+std::vector<domain::orders::Order> GetKitchenOrdersUseCase::execute(std::int64_t businessId) { return orderRepository_.listKitchenActive(businessId); }
 
 StartPreparingOrderUseCase::StartPreparingOrderUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-void StartPreparingOrderUseCase::execute(std::int64_t orderId)
+void StartPreparingOrderUseCase::execute(std::int64_t businessId, std::int64_t orderId)
 {
     const auto order = orderRepository_.findById(orderId);
-    if (!order.has_value() || order->status != domain::OrderStatus::PENDING)
+    if (!order.has_value() || order->businessId != businessId)
+    {
+        throw domain::DomainError("Order not found");
+    }
+    if (order->status != domain::OrderStatus::PENDING)
     {
         throw domain::DomainError("Only pending orders can move to preparing");
     }
@@ -138,11 +143,20 @@ void StartPreparingOrderUseCase::execute(std::int64_t orderId)
 }
 
 MarkOrderItemReadyUseCase::MarkOrderItemReadyUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-void MarkOrderItemReadyUseCase::execute(std::int64_t itemId) { orderRepository_.updateOrderItemStatus(itemId, domain::OrderItemStatus::READY); }
+void MarkOrderItemReadyUseCase::execute(std::int64_t businessId, std::int64_t itemId)
+{
+    (void)businessId;
+    orderRepository_.updateOrderItemStatus(itemId, domain::OrderItemStatus::READY);
+}
 
 MarkOrderReadyUseCase::MarkOrderReadyUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-void MarkOrderReadyUseCase::execute(std::int64_t orderId)
+void MarkOrderReadyUseCase::execute(std::int64_t businessId, std::int64_t orderId)
 {
+    const auto order = orderRepository_.findById(orderId);
+    if (!order.has_value() || order->businessId != businessId)
+    {
+        throw domain::DomainError("Order not found");
+    }
     if (!orderRepository_.allItemsReady(orderId))
     {
         throw domain::DomainError("All order items must be READY before closing the order");
@@ -151,13 +165,13 @@ void MarkOrderReadyUseCase::execute(std::int64_t orderId)
 }
 
 GetOrdersHistoryUseCase::GetOrdersHistoryUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-std::vector<domain::orders::Order> GetOrdersHistoryUseCase::execute() { return orderRepository_.listHistory(); }
+std::vector<domain::orders::Order> GetOrdersHistoryUseCase::execute(std::int64_t businessId) { return orderRepository_.listHistory(businessId); }
 
 CancelOrderUseCase::CancelOrderUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
-void CancelOrderUseCase::execute(std::int64_t orderId)
+void CancelOrderUseCase::execute(std::int64_t businessId, std::int64_t orderId)
 {
     const auto order = orderRepository_.findById(orderId);
-    if (!order.has_value())
+    if (!order.has_value() || order->businessId != businessId)
     {
         throw domain::DomainError("Order not found");
     }
