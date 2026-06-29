@@ -208,7 +208,7 @@ Json::Value productToJson(const domain::menu::Product &product)
         image["file_name"] = product.image->fileName;
         image["mime_type"] = product.image->mimeType;
         image["file_size"] = Json::Int64(product.image->fileSize);
-        image["url"] = services().publicProductFilesBaseUrl + "/" + product.image->fileName;
+        image["url"] = services().fileStorageService->publicUrl(product.image->filePath, product.image->mimeType);
         value["image"] = image;
     }
     else
@@ -782,6 +782,7 @@ void ApiController::payOrder(const drogon::HttpRequestPtr &req,
     });
 }
 }  // namespace starcafe::interfaces::rest
+
 
 
 

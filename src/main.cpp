@@ -26,7 +26,13 @@ int main()
     infrastructure::security::PasswordHasher passwordHasher(config.bcryptCost);
     infrastructure::security::JwtService jwtService(config.jwtSecret, config.jwtExpiresIn);
     infrastructure::qr::QrTokenService qrTokenService;
-    infrastructure::storage::FileStorageService fileStorageService(config.uploadDir);
+
+    infrastructure::storage::FileStorageOptions storageOptions;
+    storageOptions.cloudinaryCloudName = config.cloudinaryCloudName;
+    storageOptions.cloudinaryApiKey = config.cloudinaryApiKey;
+    storageOptions.cloudinaryApiSecret = config.cloudinaryApiSecret;
+    storageOptions.cloudinaryFolder = config.cloudinaryFolder;
+    infrastructure::storage::FileStorageService fileStorageService(std::move(storageOptions));
 
     infrastructure::repositories::PostgresBusinessRepository businessRepository(db);
     infrastructure::repositories::PostgresUserRepository userRepository(db);
@@ -54,7 +60,10 @@ int main()
     application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository, addonRepository);
     application::menu::GetPublicMenuUseCase getPublicMenu(productRepository, businessRepository);
     application::menu::ListProductsUseCase listProducts(productRepository);
-    application::menu::UploadProductImageUseCase uploadProductImage(productRepository, productImageRepository, fileStorageService, config.maxProductImageSizeMb * 1024 * 1024);
+    application::menu::UploadProductImageUseCase uploadProductImage(productRepository,
+                                                                    productImageRepository,
+                                                                    fileStorageService,
+                                                                    config.maxProductImageSizeMb * 1024 * 1024);
     application::menu::ReplaceProductImageUseCase replaceProductImage(uploadProductImage);
     application::menu::DeleteProductImageUseCase deleteProductImage(productRepository, productImageRepository, fileStorageService);
     application::tables::CreateTableUseCase createTable(tableRepository, qrTokenService);
@@ -83,7 +92,6 @@ int main()
     registry.productImageRepository = &productImageRepository;
     registry.fileStorageService = &fileStorageService;
     registry.frontendBaseUrl = config.frontendBaseUrl;
-    registry.publicProductFilesBaseUrl = config.publicFilesBaseUrl + "/products";
     registry.createBusiness = &createBusiness;
     registry.listBusinesses = &listBusinesses;
     registry.registerUser = &registerUser;
@@ -124,7 +132,7 @@ int main()
     infrastructure::security::configureJwt(&jwtService);
 
     drogon::app().addListener("0.0.0.0", config.appPort);
-    drogon::app().setThreadNum(1);
+    drogon::app().setThreadNum(config.appThreads);
     drogon::app().run();
     return 0;
 }

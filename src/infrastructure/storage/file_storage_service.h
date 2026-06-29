@@ -12,19 +12,33 @@ struct StoredFile
     std::string relativePath;
 };
 
+struct FileStorageOptions
+{
+    std::string cloudinaryCloudName;
+    std::string cloudinaryApiKey;
+    std::string cloudinaryApiSecret;
+    std::string cloudinaryFolder{"nova/products"};
+};
+
 class FileStorageService
 {
   public:
-    explicit FileStorageService(std::string uploadDir);
+    explicit FileStorageService(FileStorageOptions options);
     StoredFile storeProductImage(std::int64_t productId,
                                  const std::string &sourcePath,
                                  const domain::menu::ImageMimeType &mimeType,
                                  const std::string &originalFileName) const;
     void deleteFile(const std::string &relativePath) const;
     std::string resolvePublicFile(const std::string &fileName) const;
-    const std::string &uploadDir() const;
+    std::string publicUrl(const std::string &storedPath, const std::string &mimeType) const;
 
   private:
-    std::string uploadDir_;
+    std::string buildCloudinarySignature(const std::string &payload) const;
+    StoredFile storeProductImageInCloudinary(std::int64_t productId,
+                                             const std::string &sourcePath,
+                                             const domain::menu::ImageMimeType &mimeType) const;
+    void deleteCloudinaryFile(const std::string &publicId) const;
+
+    FileStorageOptions options_;
 };
 }  // namespace starcafe::infrastructure::storage

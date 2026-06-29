@@ -19,7 +19,6 @@ struct ServiceRegistry
     domain::IProductImageRepository *productImageRepository{};
     infrastructure::storage::FileStorageService *fileStorageService{};
     std::string frontendBaseUrl;
-    std::string publicProductFilesBaseUrl;
     application::businesses::CreateBusinessUseCase *createBusiness{};
     application::businesses::ListBusinessesUseCase *listBusinesses{};
     application::identity::RegisterUserUseCase *registerUser{};
