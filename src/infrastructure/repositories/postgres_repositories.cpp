@@ -370,7 +370,12 @@ PostgresRestaurantTableRepository::PostgresRestaurantTableRepository(DbClientPtr
 domain::tables::RestaurantTable PostgresRestaurantTableRepository::create(const domain::tables::RestaurantTable &table)
 {
     const auto result = db_->execSqlSync("insert into restaurant_tables (business_id, table_number, qr_token, is_active) values ($1, $2, $3, $4) returning id, business_id, table_number, qr_token, is_active", table.businessId, table.tableNumber, table.qrToken, table.isActive);
-    auto created = mapTable(result[0]);
+    domain::tables::RestaurantTable created;
+    created.id = result[0]["id"].as<std::int64_t>();
+    created.businessId = result[0]["business_id"].as<std::int64_t>();
+    created.tableNumber = result[0]["table_number"].as<int>();
+    created.qrToken = result[0]["qr_token"].as<std::string>();
+    created.isActive = result[0]["is_active"].as<bool>();
     const auto business = db_->execSqlSync("select name as business_name, slug as business_slug from businesses where id = $1 limit 1", created.businessId);
     if (!business.empty())
     {
@@ -401,7 +406,12 @@ domain::tables::RestaurantTable PostgresRestaurantTableRepository::updateQrToken
 {
     const auto result = db_->execSqlSync("update restaurant_tables set qr_token = $1 where id = $2 returning id, business_id, table_number, qr_token, is_active", qrToken, id);
     if (result.empty()) throw domain::DomainError("Table not found");
-    auto updated = mapTable(result[0]);
+    domain::tables::RestaurantTable updated;
+    updated.id = result[0]["id"].as<std::int64_t>();
+    updated.businessId = result[0]["business_id"].as<std::int64_t>();
+    updated.tableNumber = result[0]["table_number"].as<int>();
+    updated.qrToken = result[0]["qr_token"].as<std::string>();
+    updated.isActive = result[0]["is_active"].as<bool>();
     const auto business = db_->execSqlSync("select name as business_name, slug as business_slug from businesses where id = $1 limit 1", updated.businessId);
     if (!business.empty())
     {
@@ -440,8 +450,15 @@ domain::orders::Order PostgresOrderRepository::create(const domain::orders::Orde
     {
         auto transaction = db_->newTransaction();
         const auto orderResult = transaction->execSqlSync("insert into orders (business_id, table_id, customer_name, status, total) values ($1, $2, $3, $4, $5) returning id, business_id, table_id, customer_name, status, total, cast(created_at as text) as created_at, cast(updated_at as text) as updated_at", order.businessId, order.tableId, cleanText(order.customerName), domain::toString(order.status), order.total);
-        created = mapOrderBase(orderResult[0]);
+        created.id = orderResult[0]["id"].as<std::int64_t>();
+        created.businessId = orderResult[0]["business_id"].as<std::int64_t>();
+        created.tableId = orderResult[0]["table_id"].as<std::int64_t>();
         created.tableNumber = order.tableNumber;
+        created.customerName = orderResult[0]["customer_name"].as<std::string>();
+        created.status = domain::orderStatusFromString(orderResult[0]["status"].as<std::string>());
+        created.total = orderResult[0]["total"].as<double>();
+        created.createdAt = orderResult[0]["created_at"].as<std::string>();
+        created.updatedAt = orderResult[0]["updated_at"].as<std::string>();
         for (const auto &item : order.items)
         {
             const auto itemResult = transaction->execSqlSync("insert into order_items (order_id, product_id, quantity, unit_price, note, status) values ($1, $2, $3, $4, $5, $6) returning id", created.id, item.productId, item.quantity, item.unitPrice, cleanText(item.notes), domain::toString(item.status));
@@ -549,3 +566,5 @@ std::vector<domain::payments::Payment> PostgresPaymentRepository::listAll(std::i
     return payments;
 }
 }  // namespace starcafe::infrastructure::repositories
+
+

@@ -1,0 +1,1219 @@
+POST
+/api/v1/super-admin/businesses
+Crear cafeteria
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "name": "Star Cafe",
+  "slug": "star-cafe",
+  "logoUrl": "",
+  "primaryColor": "#1f4b3f"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/super-admin/businesses' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJyb290QG5vdmEuY29tIiwKCSJleHAiIDogMTc4Mjc3NzA0MSwKCSJuYW1lIiA6ICJOb3ZhIFJvb3QiLAoJInJvbGUiIDogIlNVUEVSX0FETUlOIiwKCSJzdWIiIDogMQp9.Zq_EXsxKznmsZnJ7DSaOALSrKTf13WFwI0BjqkABhCA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Star Cafe",
+  "slug": "star-cafe",
+  "logoUrl": "",
+  "primaryColor": "#1f4b3f"
+}'
+Request URL
+http://localhost:8080/api/v1/super-admin/businesses
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-28 23:54:27.380794",
+    "id": 1,
+    "isActive": true,
+    "logoUrl": "",
+    "name": "Star Cafe",
+    "primaryColor": "#1f4b3f",
+    "slug": "star-cafe"
+  },
+  "success": true
+}
+Response headers
+ content-length: 165 
+ content-type: application/json; charset=utf-8 
+ date: Sun,28 Jun 2026 23:54:24 GMT 
+ server: drogon/1.9.13 
+Request duration
+583 ms
+Star se creo correctamente 
+POST
+/api/v1/super-admin/businesses
+Crear cafeteria
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "name": "Cholo Cafe",
+  "slug": "cholo-cafe",
+  "logoUrl": "",
+  "primaryColor": "#7a4b2a"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/super-admin/businesses' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImVtYWlsIiA6ICJyb290QG5vdmEuY29tIiwKCSJleHAiIDogMTc4Mjc3NzA0MSwKCSJuYW1lIiA6ICJOb3ZhIFJvb3QiLAoJInJvbGUiIDogIlNVUEVSX0FETUlOIiwKCSJzdWIiIDogMQp9.Zq_EXsxKznmsZnJ7DSaOALSrKTf13WFwI0BjqkABhCA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Cholo Cafe",
+  "slug": "cholo-cafe",
+  "logoUrl": "",
+  "primaryColor": "#7a4b2a"
+}'
+Request URL
+http://localhost:8080/api/v1/super-admin/businesses
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "createdAt": "2026-06-28 23:55:27.362885",
+    "id": 2,
+    "isActive": true,
+    "logoUrl": "",
+    "name": "Cholo Cafe",
+    "primaryColor": "#7a4b2a",
+    "slug": "cholo-cafe"
+  },
+  "success": true
+}
+Response headers
+ content-length: 167 
+ content-type: application/json; charset=utf-8 
+ date: Sun,28 Jun 2026 23:55:24 GMT 
+ server: drogon/1.9.13 
+Request duration
+268 ms
+Cholo ce creo correctamente
+
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "email": "admin@star.com",
+    "id": 2,
+    "isActive": true,
+    "name": "Admin Star",
+    "role": "ADMIN"
+  },
+  "success": true
+}
+Se creo el admin de star 
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "email": "kitchen@star.com",
+    "id": 3,
+    "isActive": true,
+    "name": "Kitchen Star",
+    "role": "KITCHEN"
+  },
+  "success": true
+}
+se creo el Kitchen de star
+	
+Response body
+Download
+{
+  "data": {
+    "businessId": 2,
+    "email": "admin@cholo.com",
+    "id": 4,
+    "isActive": true,
+    "name": "Admin Cholo",
+    "role": "ADMIN"
+  },
+  "success": true
+}
+se creo el admin de cholo
+	
+Response body
+Download
+{
+  "data": {
+    "businessId": 2,
+    "email": "kitchen@cholo.com",
+    "id": 5,
+    "isActive": true,
+    "name": "Kitchen Cholo",
+    "role": "KITCHEN"
+  },
+  "success": true
+}
+se creo el Kitchen de cholo
+
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "email": "admin@star.com",
+      "id": 2,
+      "isActive": true,
+      "name": "Admin Star",
+      "role": "ADMIN"
+    },
+    {
+      "businessId": 1,
+      "email": "kitchen@star.com",
+      "id": 3,
+      "isActive": true,
+      "name": "Kitchen Star",
+      "role": "KITCHEN"
+    }
+  ],
+  "success": true
+}
+Con id 1 de star
+	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 2,
+      "email": "admin@cholo.com",
+      "id": 4,
+      "isActive": true,
+      "name": "Admin Cholo",
+      "role": "ADMIN"
+    },
+    {
+      "businessId": 2,
+      "email": "kitchen@cholo.com",
+      "id": 5,
+      "isActive": true,
+      "name": "Kitchen Cholo",
+      "role": "KITCHEN"
+    }
+  ],
+  "success": true
+}
+con id 2 de cholo
+
+Error: Bad Request
+
+Response body
+Download
+{
+  "message": "Maximum of 3 active admin users reached for this business",
+  "success": false
+}
+me da error por mas de 3 admin con id 1 de star
+	
+Error: Bad Request
+
+Response body
+Download
+{
+  "message": "Maximum of 5 active kitchen users reached for this business",
+  "success": false
+}
+cuando intento crear mas de 5 kitchen me bota error y esto esta bien
+
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "description": "",
+    "id": 1,
+    "isActive": true,
+    "name": "Cafes Star"
+  },
+  "success": true
+}
+Post de categoria con star se hizo bien 
+	
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "id": 1,
+    "isActive": true,
+    "name": "Leche extra Star",
+    "price": 1.5
+  },
+  "success": true
+}
+post de addon para star se hizo bien 
+	
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "categoryId": 1,
+    "description": "Cafe Star",
+    "id": 1,
+    "image": null,
+    "isActive": true,
+    "isAvailable": true,
+    "name": "Capuccino Star",
+    "price": 12.5
+  },
+  "success": true
+}
+el post del producto se hizo bien 
+	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "businessName": "Star Cafe",
+      "businessSlug": "star-cafe",
+      "id": 1,
+      "isActive": true,
+      "qrToken": "842960e2-7c1f-4946-a703-8c22976b5ac9",
+      "qrUrl": "http://localhost:3000/c/star-cafe/mesa/842960e2-7c1f-4946-a703-8c22976b5ac9",
+      "tableNumber": 1
+    },
+    {
+      "businessId": 1,
+      "businessName": "Star Cafe",
+      "businessSlug": "star-cafe",
+      "id": 4,
+      "isActive": true,
+      "qrToken": "39221762-9695-4235-bb7f-18781983b60d",
+      "qrUrl": "http://localhost:3000/c/star-cafe/mesa/39221762-9695-4235-bb7f-18781983b60d",
+      "tableNumber": 2
+    },
+    {
+      "businessId": 1,
+      "businessName": "Star Cafe",
+      "businessSlug": "star-cafe",
+      "id": 6,
+      "isActive": true,
+      "qrToken": "e13076f9-31ce-4441-acd7-831fd3a9d91c",
+      "qrUrl": "http://localhost:3000/c/star-cafe/mesa/e13076f9-31ce-4441-acd7-831fd3a9d91c",
+      "tableNumber": 3
+    }
+  ],
+  "success": true
+}
+hubo un percance con las mesas pero su pudimos crearlas para Star
+
+Response body
+Download
+{
+  "data": [],
+  "success": true
+}
+con login de cholo admin, todo me sale asi o sea vacio
+
+Response body
+Download
+{
+  "data": {
+    "businessId": 2,
+    "description": "",
+    "id": 2,
+    "isActive": true,
+    "name": "Cafes Cholo"
+  },
+  "success": true
+}
+se crea bien con id 2 de cholo
+{
+  "data": {
+    "businessId": 2,
+    "id": 2,
+    "isActive": true,
+    "name": "Pan extra Cholo",
+    "price": 2
+  },
+  "success": true
+}
+tmb se crea bien con admin cholo
+{
+  "data": {
+    "businessId": 2,
+    "categoryId": 2,
+    "description": "Cafe del local Cholo",
+    "id": 2,
+    "image": null,
+    "isActive": true,
+    "isAvailable": true,
+    "name": "Cafe Cholo",
+    "price": 10
+  },
+  "success": true
+}
+el producto tmb se crea con id 2
+	
+Response body
+Download
+{
+  "data": {
+    "businessId": 2,
+    "businessName": "Cholo Cafe",
+    "businessSlug": "cholo-cafe",
+    "id": 7,
+    "isActive": true,
+    "qrToken": "3c4214f0-d69a-4263-9ce3-435cc9a01df4",
+    "qrUrl": "http://localhost:3000/c/cholo-cafe/mesa/3c4214f0-d69a-4263-9ce3-435cc9a01df4",
+    "tableNumber": 1
+  },
+  "success": true
+}
+la mesa tmb, todo se creo bien para cholo con el business id 2
+
+Lo probe con ambos y sus get para categorías, addons, mesas y pedidos solo me muestran sus productos
+
+GET
+/api/v1/public/tables/{qrToken}/session
+Obtener mesa y pedidos activos por QR
+
+Parameters
+Cancel
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+842960e2-7c1f-4946-a703-8c22976b5ac9
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/session' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/session
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": {
+    "activeOrdersCount": 0,
+    "canCreateMoreOrders": true,
+    "remainingSlots": 3,
+    "table": {
+      "businessId": 1,
+      "businessName": "Star Cafe",
+      "businessSlug": "star-cafe",
+      "id": 1,
+      "isActive": true,
+      "qrToken": "842960e2-7c1f-4946-a703-8c22976b5ac9",
+      "qrUrl": "http://localhost:3000/c/star-cafe/mesa/842960e2-7c1f-4946-a703-8c22976b5ac9",
+      "tableNumber": 1
+    }
+  },
+  "success": true
+}
+con qr de star
+GET
+/api/v1/public/menu
+Listar menu publico
+
+Parameters
+Cancel
+Name	Description
+businessSlug
+string
+(query)
+Slug de la cafeteria
+
+star-cafe
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/menu?businessSlug=star-cafe' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/menu?businessSlug=star-cafe
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "categoryId": 1,
+      "description": "Cafe Star",
+      "id": 1,
+      "image": null,
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Star",
+      "price": 12.5
+    }
+  ],
+  "success": true
+}
+menu de star
+
+GET
+/api/v1/public/tables/{qrToken}/session
+Obtener mesa y pedidos activos por QR
+
+Parameters
+Cancel
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+3c4214f0-d69a-4263-9ce3-435cc9a01df4
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/tables/3c4214f0-d69a-4263-9ce3-435cc9a01df4/session' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/tables/3c4214f0-d69a-4263-9ce3-435cc9a01df4/session
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": {
+    "activeOrdersCount": 0,
+    "canCreateMoreOrders": true,
+    "remainingSlots": 3,
+    "table": {
+      "businessId": 2,
+      "businessName": "Cholo Cafe",
+      "businessSlug": "cholo-cafe",
+      "id": 7,
+      "isActive": true,
+      "qrToken": "3c4214f0-d69a-4263-9ce3-435cc9a01df4",
+      "qrUrl": "http://localhost:3000/c/cholo-cafe/mesa/3c4214f0-d69a-4263-9ce3-435cc9a01df4",
+      "tableNumber": 1
+    }
+  },
+  "success": true
+}
+get con el qr de cholo
+GET
+/api/v1/public/menu
+Listar menu publico
+
+Parameters
+Cancel
+Name	Description
+businessSlug
+string
+(query)
+Slug de la cafeteria
+
+cholo-cafe
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/menu?businessSlug=cholo-cafe' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/menu?businessSlug=cholo-cafe
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 2,
+      "categoryId": 2,
+      "description": "Cafe del local Cholo",
+      "id": 2,
+      "image": null,
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Cafe Cholo",
+      "price": 10
+    }
+  ],
+  "success": true
+}
+Response headers
+ content-length: 182 
+ content-type: application/json; charset=utf-8 
+ date: Mon,29 Jun 2026 00:50:53 GMT 
+ server: drogon/1.9.13 
+Request duration
+467 ms
+menu de cholo con el unico producto que agregamos
+
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+Parameters
+Cancel
+Reset
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+842960e2-7c1f-4946-a703-8c22976b5ac9
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "notes": "Sin azucar",
+      "addonIds": [1]
+    }
+  ]
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/orders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "notes": "Sin azucar",
+      "addonIds": [1]
+    }
+  ]
+}'
+Request URL
+http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/orders
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "businessId": 1,
+    "createdAt": "2026-06-29 00:58:08.516707",
+    "customerName": "Luis",
+    "id": 2,
+    "items": [
+      {
+        "addons": [
+          {
+            "addonId": 1,
+            "name": "Leche extra Star",
+            "price": 1.5
+          }
+        ],
+        "id": 1,
+        "notes": "Sin azucar",
+        "productId": 1,
+        "productName": "Capuccino Star",
+        "quantity": 1,
+        "status": "PENDING",
+        "unitPrice": 12.5
+      }
+    ],
+    "status": "PENDING",
+    "tableId": 1,
+    "tableNumber": 1,
+    "total": 14,
+    "updatedAt": "2026-06-29 00:58:08.516707"
+  },
+  "success": true
+}
+despues del primero error ahora esto me sale como id 2, o sea que si se creo y se mando a mi db y ahora que veo mi db si se creo y se guardo pero con el primer intento me dio este error 
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+Parameters
+Cancel
+Reset
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+842960e2-7c1f-4946-a703-8c22976b5ac9
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "notes": "Sin azucar",
+      "addonIds": [1]
+    }
+  ]
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/orders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "customerName": "Luis",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "notes": "Sin azucar",
+      "addonIds": [1]
+    }
+  ]
+}'
+Request URL
+http://localhost:8080/api/v1/public/tables/842960e2-7c1f-4946-a703-8c22976b5ac9/orders
+Server response
+Code	Details
+500
+Undocumented
+Error: Internal Server Error
+
+Response body
+Download
+{
+  "message": "there is no column named table_number",
+  "success": false
+}
+17. Crear un pedido en Star
+Sin token:
+POST /api/v1/public/tables/{qrTokenStar}/orders
+ya estoy en este paso y al ejecutarlo me dio error
+	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "createdAt": "2026-06-29 00:58:08.516707",
+      "customerName": "Luis",
+      "id": 2,
+      "items": [
+        {
+          "addons": [
+            {
+              "addonId": 1,
+              "name": "Leche extra Star",
+              "price": 1.5
+            }
+          ],
+          "id": 1,
+          "notes": "Sin azucar",
+          "productId": 1,
+          "productName": "Capuccino Star",
+          "quantity": 1,
+          "status": "PENDING",
+          "unitPrice": 12.5
+        }
+      ],
+      "status": "PENDING",
+      "tableId": 1,
+      "tableNumber": 1,
+      "total": 14,
+      "updatedAt": "2026-06-29 00:58:08.516707"
+    },
+    {
+      "businessId": 1,
+      "createdAt": "2026-06-29 00:52:45.895945",
+      "customerName": "Luis",
+      "id": 1,
+      "status": "PENDING",
+      "tableId": 1,
+      "tableNumber": 1,
+      "total": 14,
+      "updatedAt": "2026-06-29 00:52:45.895945"
+    }
+  ],
+  "success": true
+}
+asi se ven las order desde ADMIN
+GET
+/api/v1/kitchen/orders
+Pedidos activos de cocina
+
+
+Parameters
+Cancel
+No parameters
+
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/kitchen/orders' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImJ1c2luZXNzSWQiIDogMSwKCSJlbWFpbCIgOiAia2l0Y2hlbkBzdGFyLmNvbSIsCgkiZXhwIiA6IDE3ODI3ODEzNjUsCgkibmFtZSIgOiAiS2l0Y2hlbiBTdGFyIiwKCSJyb2xlIiA6ICJLSVRDSEVOIiwKCSJzdWIiIDogMwp9.lrUni2FIjmbAF_L7r068BvptJxvxhCGQFSlQKU4t214'
+Request URL
+http://localhost:8080/api/v1/kitchen/orders
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "createdAt": "2026-06-29 00:58:08.516707",
+      "customerName": "Luis",
+      "id": 2,
+      "items": [
+        {
+          "addons": [
+            {
+              "addonId": 1,
+              "name": "Leche extra Star",
+              "price": 1.5
+            }
+          ],
+          "id": 1,
+          "notes": "Sin azucar",
+          "productId": 1,
+          "productName": "Capuccino Star",
+          "quantity": 1,
+          "status": "PENDING",
+          "unitPrice": 12.5
+        }
+      ],
+      "status": "PENDING",
+      "tableId": 1,
+      "tableNumber": 1,
+      "total": 14,
+      "updatedAt": "2026-06-29 00:58:08.516707"
+    },
+    {
+      "businessId": 1,
+      "createdAt": "2026-06-29 00:52:45.895945",
+      "customerName": "Luis",
+      "id": 1,
+      "status": "PENDING",
+      "tableId": 1,
+      "tableNumber": 1,
+      "total": 14,
+      "updatedAt": "2026-06-29 00:52:45.895945"
+    }
+  ],
+  "success": true
+}
+desde kitchen tmb se ve aunque el id 1 de la orden se ve raro
+
+	
+Response body
+Download
+{
+  "data": [],
+  "success": true
+}
+como kitchen-cholo me sale eso y como admin de cholo tmb
+
+POST
+/api/v1/public/tables/{qrToken}/orders
+Crear pedido desde mesa
+
+
+GET
+/api/v1/public/tables/{qrToken}/session
+Obtener mesa y pedidos activos por QR
+
+Parameters
+Cancel
+Name	Description
+qrToken *
+string
+(path)
+Token del QR
+
+c7058e19-6ad0-4223-ac5d-7587937cdd2a
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/tables/c7058e19-6ad0-4223-ac5d-7587937cdd2a/session' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/tables/c7058e19-6ad0-4223-ac5d-7587937cdd2a/session
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": {
+    "activeOrders": [
+      {
+        "businessId": 1,
+        "createdAt": "2026-06-29 00:58:08.516707",
+        "customerName": "Luis",
+        "id": 2,
+        "items": [
+          {
+            "addons": [
+              {
+                "addonId": 1,
+                "name": "Leche extra Star",
+                "price": 1.5
+              }
+            ],
+            "id": 1,
+            "notes": "Sin azucar",
+            "productId": 1,
+            "productName": "Capuccino Star",
+            "quantity": 1,
+            "status": "PENDING",
+            "unitPrice": 12.5
+          }
+        ],
+        "status": "PENDING",
+        "tableId": 1,
+        "tableNumber": 1,
+        "total": 14,
+        "updatedAt": "2026-06-29 00:58:08.516707"
+      },
+      {
+        "businessId": 1,
+        "createdAt": "2026-06-29 00:52:45.895945",
+        "customerName": "Luis",
+        "id": 1,
+        "status": "PENDING",
+        "tableId": 1,
+        "tableNumber": 1,
+        "total": 14,
+        "updatedAt": "2026-06-29 00:52:45.895945"
+      }
+    ],
+    "activeOrdersCount": 2,
+    "canCreateMoreOrders": true,
+    "remainingSlots": 1,
+    "table": {
+      "businessId": 1,
+      "businessName": "Star Cafe",
+      "businessSlug": "star-cafe",
+      "id": 1,
+      "isActive": true,
+      "qrToken": "c7058e19-6ad0-4223-ac5d-7587937cdd2a",
+      "qrUrl": "http://localhost:3000/c/star-cafe/mesa/c7058e19-6ad0-4223-ac5d-7587937cdd2a",
+      "tableNumber": 1
+    }
+  },
+  "success": true
+}
+regenere el qr de la mesa id 1 con admin star, o sea para el business 1, y si funciono, me dejo ver las ordeneres de la mesa 1
+e0d7936a-4360-49ce-8d16-2a017cb947fb
+lo volvi a regenerar y me dio eso un nuevo qr
+
+Response body
+Download
+{
+  "data": {
+    "file_name": "product_1_7585fdf7-72b6-45e4-a639-791454df4846.png",
+    "file_size": 581636,
+    "id": 1,
+    "mime_type": "image/png",
+    "product_id": 1,
+    "url": "http://localhost:8080/api/v1/uploads/products/product_1_7585fdf7-72b6-45e4-a639-791454df4846.png"
+  },
+  "success": true
+}
+al subir una imagen para prodcut id 1 de star me salio bien
+GET
+/api/v1/admin/products
+Listar productos
+
+
+Parameters
+Cancel
+Name	Description
+businessId
+string
+(query)
+Contexto de cafeteria para SUPER_ADMIN
+
+businessId
+includeInactive
+string
+(query)
+Incluir productos inactivos
+
+includeInactive
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/admin/products' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImJ1c2luZXNzSWQiIDogMSwKCSJlbWFpbCIgOiAiYWRtaW5Ac3Rhci5jb20iLAoJImV4cCIgOiAxNzgyNzc5MzAxLAoJIm5hbWUiIDogIkFkbWluIFN0YXIiLAoJInJvbGUiIDogIkFETUlOIiwKCSJzdWIiIDogMgp9.EDXH7G0OZomjRstSpLSFvs5xmZw7xG9IzkwDV6-ZZRs'
+Request URL
+http://localhost:8080/api/v1/admin/products
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "categoryId": 1,
+      "description": "Cafe Star",
+      "id": 1,
+      "image": {
+        "file_name": "product_1_7585fdf7-72b6-45e4-a639-791454df4846.png",
+        "file_size": 581636,
+        "id": 1,
+        "mime_type": "image/png",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_1_7585fdf7-72b6-45e4-a639-791454df4846.png"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Star",
+      "price": 12.5
+    }
+  ],
+  "success": true
+}
+el get me salio bien con la imagen 
+GET
+/api/v1/public/menu
+Listar menu publico
+
+Parameters
+Cancel
+Name	Description
+businessSlug
+string
+(query)
+Slug de la cafeteria
+
+star-cafe
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/public/menu?businessSlug=star-cafe' \
+  -H 'accept: application/json'
+Request URL
+http://localhost:8080/api/v1/public/menu?businessSlug=star-cafe
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 1,
+      "categoryId": 1,
+      "description": "Cafe Star",
+      "id": 1,
+      "image": {
+        "file_name": "product_1_7585fdf7-72b6-45e4-a639-791454df4846.png",
+        "file_size": 581636,
+        "id": 1,
+        "mime_type": "image/png",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_1_7585fdf7-72b6-45e4-a639-791454df4846.png"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Capuccino Star",
+      "price": 12.5
+    }
+  ],
+  "success": true
+}
+para el get del menu de star tmb me sale la imagen 
+ahora voy a probar con admin cholo
+POST
+/api/v1/admin/products/{productId}/image
+Subir imagen principal de producto
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+productId *
+string
+(path)
+Id del producto
+
+2
+businessId
+string
+(query)
+Contexto de cafeteria para SUPER_ADMIN
+
+businessId
+Request body
+
+multipart/form-data
+image *
+string($binary)
+Diseño sin título (4).png
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/admin/products/2/image' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ewoJImFsZyIgOiAiSFMyNTYiLAoJInR5cCIgOiAiSldUIgp9.ewoJImJ1c2luZXNzSWQiIDogMiwKCSJlbWFpbCIgOiAiYWRtaW5AY2hvbG8uY29tIiwKCSJleHAiIDogMTc4Mjc3ODkzMSwKCSJuYW1lIiA6ICJBZG1pbiBDaG9sbyIsCgkicm9sZSIgOiAiQURNSU4iLAoJInN1YiIgOiA0Cn0.e31QnO9eZs96qvmscpv3OsJTolMwijlqGjpdfUilud8' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'image=@Diseño sin título (4).png;type=image/png'
+Request URL
+http://localhost:8080/api/v1/admin/products/2/image
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "data": {
+    "file_name": "product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png",
+    "file_size": 602430,
+    "id": 2,
+    "mime_type": "image/png",
+    "product_id": 2,
+    "url": "http://localhost:8080/api/v1/uploads/products/product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png"
+  },
+  "success": true
+}
+si se guarda correctamente la imagen 
+{
+  "data": [
+    {
+      "businessId": 2,
+      "categoryId": 2,
+      "description": "Cafe del local Cholo",
+      "id": 2,
+      "image": {
+        "file_name": "product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png",
+        "file_size": 602430,
+        "id": 2,
+        "mime_type": "image/png",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Cafe Cholo",
+      "price": 10
+    }
+  ],
+  "success": true
+}
+el get de products tmb lo muestra
+	
+Response body
+Download
+{
+  "data": [
+    {
+      "businessId": 2,
+      "categoryId": 2,
+      "description": "Cafe del local Cholo",
+      "id": 2,
+      "image": {
+        "file_name": "product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png",
+        "file_size": 602430,
+        "id": 2,
+        "mime_type": "image/png",
+        "url": "http://localhost:8080/api/v1/uploads/products/product_2_a05d2e7b-b33a-4e67-ae30-85c5be9e1677.png"
+      },
+      "isActive": true,
+      "isAvailable": true,
+      "name": "Cafe Cholo",
+      "price": 10
+    }
+  ],
+  "success": true
+}
+el get del menu tmb me muestra la imagen por separado
