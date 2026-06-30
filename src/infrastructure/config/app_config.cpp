@@ -23,6 +23,7 @@ AppConfig AppConfig::load()
     config.cloudinaryApiKey = EnvLoader::getRequired("CLOUDINARY_API_KEY");
     config.cloudinaryApiSecret = EnvLoader::getRequired("CLOUDINARY_API_SECRET");
     config.cloudinaryFolder = EnvLoader::getOptional("CLOUDINARY_FOLDER", "nova/products");
+    config.cloudinaryBusinessFolder = EnvLoader::getOptional("CLOUDINARY_BUSINESS_FOLDER", "nova/businesses");
     config.maxProductImageSizeMb = std::stoll(EnvLoader::getOptional("MAX_PRODUCT_IMAGE_SIZE_MB", "5"));
 
     std::stringstream stream(EnvLoader::getOptional("CORS_ALLOWED_ORIGINS"));

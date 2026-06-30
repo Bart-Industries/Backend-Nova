@@ -21,6 +21,7 @@ struct AppConfig
     std::string cloudinaryApiKey;
     std::string cloudinaryApiSecret;
     std::string cloudinaryFolder;
+    std::string cloudinaryBusinessFolder;
     std::int64_t maxProductImageSizeMb{};
 
     static AppConfig load();
