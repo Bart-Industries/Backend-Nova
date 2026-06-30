@@ -12,7 +12,7 @@ AppConfig AppConfig::load()
 
     AppConfig config;
     config.appEnv = EnvLoader::getOptional("APP_ENV", "local");
-    config.appPort = static_cast<std::uint16_t>(std::stoi(EnvLoader::getRequired("APP_PORT")));
+    config.appPort = static_cast<std::uint16_t>(std::stoi(EnvLoader::getOptional("APP_PORT", EnvLoader::getOptional("PORT", "8080"))));
     config.databaseUrl = EnvLoader::getRequired("DATABASE_URL");
     config.jwtSecret = EnvLoader::getRequired("JWT_SECRET");
     config.jwtExpiresIn = std::stoll(EnvLoader::getRequired("JWT_EXPIRES_IN"));
