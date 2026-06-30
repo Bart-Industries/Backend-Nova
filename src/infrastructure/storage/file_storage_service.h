@@ -34,7 +34,6 @@ class FileStorageService
                                  const domain::menu::ImageMimeType &mimeType,
                                  const std::string &originalFileName) const;
     void deleteFile(const std::string &relativePath) const;
-    std::string resolvePublicFile(const std::string &fileName) const;
     std::string publicUrl(const std::string &storedPath, const std::string &mimeType) const;
 
   private:

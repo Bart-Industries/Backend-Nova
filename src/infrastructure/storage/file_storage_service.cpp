@@ -285,11 +285,6 @@ void FileStorageService::deleteCloudinaryFile(const std::string &publicIdOrUrl) 
     }
 }
 
-std::string FileStorageService::resolvePublicFile(const std::string &) const
-{
-    throw domain::DomainError("Product images are served directly from Cloudinary URLs");
-}
-
 std::string FileStorageService::publicUrl(const std::string &storedPath, const std::string &mimeType) const
 {
     if (storedPath.empty())
