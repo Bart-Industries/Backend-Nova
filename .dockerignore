@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+build
+uploads
+*.log
+.codex
+.agents
+P1.txt
+README.md
