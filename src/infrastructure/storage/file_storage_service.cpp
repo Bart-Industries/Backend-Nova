@@ -144,6 +144,10 @@ FileStorageService::FileStorageService(FileStorageOptions options) : options_(st
     {
         options_.cloudinaryFolder = "nova/products";
     }
+    if (options_.cloudinaryBusinessFolder.empty())
+    {
+        options_.cloudinaryBusinessFolder = "nova/businesses";
+    }
 }
 
 StoredFile FileStorageService::storeProductImage(std::int64_t productId,
@@ -151,12 +155,22 @@ StoredFile FileStorageService::storeProductImage(std::int64_t productId,
                                                  const domain::menu::ImageMimeType &mimeType,
                                                  const std::string &) const
 {
-    return storeProductImageInCloudinary(productId, sourcePath, mimeType);
+    return storeImageInCloudinary(options_.cloudinaryFolder, "product", productId, sourcePath, mimeType);
 }
 
-StoredFile FileStorageService::storeProductImageInCloudinary(std::int64_t productId,
-                                                             const std::string &sourcePath,
-                                                             const domain::menu::ImageMimeType &mimeType) const
+StoredFile FileStorageService::storeBusinessLogo(std::int64_t businessId,
+                                                 const std::string &sourcePath,
+                                                 const domain::menu::ImageMimeType &mimeType,
+                                                 const std::string &) const
+{
+    return storeImageInCloudinary(options_.cloudinaryBusinessFolder, "business", businessId, sourcePath, mimeType);
+}
+
+StoredFile FileStorageService::storeImageInCloudinary(const std::string &folder,
+                                                      const std::string &entityPrefix,
+                                                      std::int64_t entityId,
+                                                      const std::string &sourcePath,
+                                                      const domain::menu::ImageMimeType &mimeType) const
 {
     if (!fs::exists(sourcePath))
     {
@@ -166,7 +180,7 @@ StoredFile FileStorageService::storeProductImageInCloudinary(std::int64_t produc
     const auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(
                                std::chrono::system_clock::now().time_since_epoch())
                                .count();
-    const std::string publicId = options_.cloudinaryFolder + "/product_" + std::to_string(productId) + "_" + drogon::utils::getUuid();
+    const std::string publicId = folder + "/" + entityPrefix + "_" + std::to_string(entityId) + "_" + drogon::utils::getUuid();
     const std::string signaturePayload = "public_id=" + publicId + "&timestamp=" + std::to_string(timestamp);
     const std::string signature = buildCloudinarySignature(signaturePayload);
     const auto normalizedPath = fs::path(sourcePath).generic_string();
