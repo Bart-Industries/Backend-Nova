@@ -36,6 +36,19 @@ struct CreateBusinessCommand
     std::string primaryColor;
 };
 
+struct UpdateBusinessThemeCommand
+{
+    std::string themeKey;
+};
+
+struct UploadBusinessLogoCommand
+{
+    std::string originalFileName;
+    std::string mimeType;
+    std::int64_t fileSize{};
+    std::string tempFilePath;
+};
+
 struct CreateCategoryCommand
 {
     std::string name;
