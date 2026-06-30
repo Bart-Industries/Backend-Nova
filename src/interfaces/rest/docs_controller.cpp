@@ -203,10 +203,8 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     root["tags"][10]["description"] = "Supervision y acciones administrativas sobre pedidos.";
     root["tags"][11]["name"] = "Cashier";
     root["tags"][11]["description"] = "Busqueda y pago de pedidos en caja.";
-    root["tags"][12]["name"] = "Uploads";
-    root["tags"][12]["description"] = "Entrega publica de archivos e imagenes.";
-    root["tags"][13]["name"] = "Admin Business Branding";
-    root["tags"][13]["description"] = "Configuracion de branding por cafeteria para usuarios ADMIN.";
+    root["tags"][12]["name"] = "Admin Business Branding";
+    root["tags"][12]["description"] = "Configuracion de branding por cafeteria para usuarios ADMIN.";
 
     root["components"]["securitySchemes"]["bearerAuth"]["type"] = "http";
     root["components"]["securitySchemes"]["bearerAuth"]["scheme"] = "bearer";
@@ -491,11 +489,6 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["delete"], "businessId", "Contexto de cafeteria para SUPER_ADMIN");
     addQueryParameter(paths["/api/v1/admin/products/{productId}/image"]["delete"], "deleteFile", "Eliminar tambien el archivo fisico");
     attachDefaultResponses(paths["/api/v1/admin/products/{productId}/image"]["delete"]);
-
-    paths["/api/v1/uploads/products/{fileName}"]["get"]["summary"] = "Servir imagen de producto";
-    addTag(paths["/api/v1/uploads/products/{fileName}"]["get"], "Uploads");
-    addPathParameter(paths["/api/v1/uploads/products/{fileName}"]["get"], "fileName", "Nombre del archivo");
-    paths["/api/v1/uploads/products/{fileName}"]["get"]["responses"]["200"]["description"] = "Archivo";
 
     callback(drogon::HttpResponse::newHttpJsonResponse(root));
 }

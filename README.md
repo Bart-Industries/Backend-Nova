@@ -113,7 +113,6 @@ Documentacion interactiva:
 - `GET /api/v1/public/menu`
 - `POST /api/v1/public/tables/{qrToken}/orders`
 - `GET /api/v1/public/orders/{orderId}/status`
-- `GET /api/v1/uploads/products/{fileName}`
 
 ### Kitchen
 
