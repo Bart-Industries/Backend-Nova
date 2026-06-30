@@ -163,6 +163,22 @@ domain::businesses::Business PostgresBusinessRepository::create(const domain::bu
                                          business.name, business.slug, business.logoUrl, business.primaryColor, business.isActive);
     return mapBusiness(result[0]);
 }
+domain::businesses::Business PostgresBusinessRepository::updateTheme(std::int64_t id, const std::string &primaryColor)
+{
+    const auto result = db_->execSqlSync("update businesses set primary_color = nullif($2, '') where id = $1 returning id, name, slug, coalesce(logo_url, '') as logo_url, coalesce(primary_color, '') as primary_color, is_active, cast(created_at as text) as created_at",
+                                         id,
+                                         primaryColor);
+    if (result.empty()) throw domain::DomainError("Business not found");
+    return mapBusiness(result[0]);
+}
+domain::businesses::Business PostgresBusinessRepository::updateLogo(std::int64_t id, const std::string &logoUrl)
+{
+    const auto result = db_->execSqlSync("update businesses set logo_url = nullif($2, '') where id = $1 returning id, name, slug, coalesce(logo_url, '') as logo_url, coalesce(primary_color, '') as primary_color, is_active, cast(created_at as text) as created_at",
+                                         id,
+                                         logoUrl);
+    if (result.empty()) throw domain::DomainError("Business not found");
+    return mapBusiness(result[0]);
+}
 
 PostgresUserRepository::PostgresUserRepository(DbClientPtr db) : db_(std::move(db)) {}
 const std::string &PostgresUserRepository::passwordColumn()

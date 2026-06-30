@@ -15,6 +15,8 @@ class PostgresBusinessRepository : public domain::IBusinessRepository
     std::optional<domain::businesses::Business> findSingleActive() override;
     std::vector<domain::businesses::Business> listAll(bool onlyActive = false) override;
     domain::businesses::Business create(const domain::businesses::Business &business) override;
+    domain::businesses::Business updateTheme(std::int64_t id, const std::string &primaryColor) override;
+    domain::businesses::Business updateLogo(std::int64_t id, const std::string &logoUrl) override;
 
   private:
     drogon::orm::DbClientPtr db_;
