@@ -32,6 +32,7 @@ int main()
     storageOptions.cloudinaryApiKey = config.cloudinaryApiKey;
     storageOptions.cloudinaryApiSecret = config.cloudinaryApiSecret;
     storageOptions.cloudinaryFolder = config.cloudinaryFolder;
+    storageOptions.cloudinaryBusinessFolder = config.cloudinaryBusinessFolder;
     infrastructure::storage::FileStorageService fileStorageService(std::move(storageOptions));
 
     infrastructure::repositories::PostgresBusinessRepository businessRepository(db);
@@ -46,6 +47,12 @@ int main()
 
     application::businesses::CreateBusinessUseCase createBusiness(businessRepository);
     application::businesses::ListBusinessesUseCase listBusinesses(businessRepository);
+    application::businesses::GetBusinessUseCase getBusiness(businessRepository);
+    application::businesses::UpdateBusinessThemeUseCase updateBusinessTheme(businessRepository);
+    application::businesses::UpdateBusinessLogoUseCase updateBusinessLogo(
+        businessRepository,
+        fileStorageService,
+        config.maxProductImageSizeMb * 1024 * 1024);
     application::identity::RegisterUserUseCase registerUser(userRepository, passwordHasher);
     application::identity::LoginUseCase login(userRepository, passwordHasher, jwtService);
     application::identity::GetCurrentUserUseCase getCurrentUser(userRepository);
@@ -72,7 +79,7 @@ int main()
     application::tables::ListTablesUseCase listTables(tableRepository);
     application::tables::DeactivateTableUseCase deactivateTable(tableRepository);
     application::orders::CreateOrderFromTableUseCase createOrderFromTable(tableRepository, productRepository, addonRepository, orderRepository);
-    application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository);
+    application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository, businessRepository);
     application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository);
     application::orders::GetKitchenOrdersUseCase getKitchenOrders(orderRepository);
     application::orders::StartPreparingOrderUseCase startPreparingOrder(orderRepository);
@@ -94,6 +101,9 @@ int main()
     registry.frontendBaseUrl = config.frontendBaseUrl;
     registry.createBusiness = &createBusiness;
     registry.listBusinesses = &listBusinesses;
+    registry.getBusiness = &getBusiness;
+    registry.updateBusinessTheme = &updateBusinessTheme;
+    registry.updateBusinessLogo = &updateBusinessLogo;
     registry.registerUser = &registerUser;
     registry.login = &login;
     registry.getCurrentUser = &getCurrentUser;

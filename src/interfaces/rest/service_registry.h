@@ -21,6 +21,9 @@ struct ServiceRegistry
     std::string frontendBaseUrl;
     application::businesses::CreateBusinessUseCase *createBusiness{};
     application::businesses::ListBusinessesUseCase *listBusinesses{};
+    application::businesses::GetBusinessUseCase *getBusiness{};
+    application::businesses::UpdateBusinessThemeUseCase *updateBusinessTheme{};
+    application::businesses::UpdateBusinessLogoUseCase *updateBusinessLogo{};
     application::identity::RegisterUserUseCase *registerUser{};
     application::identity::LoginUseCase *login{};
     application::identity::GetCurrentUserUseCase *getCurrentUser{};
