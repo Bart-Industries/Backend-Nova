@@ -176,23 +176,5 @@ void ProductImageController::deleteMainImage(const drogon::HttpRequestPtr &req,
     }
 }
 
-void ProductImageController::serveImage(const drogon::HttpRequestPtr &,
-                                        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
-                                        std::string fileName)
-{
-    try
-    {
-        const auto absolutePath = services().fileStorageService->resolvePublicFile(fileName);
-        callback(drogon::HttpResponse::newFileResponse(absolutePath));
-    }
-    catch (const domain::DomainError &error)
-    {
-        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
-    }
-    catch (const std::exception &error)
-    {
-        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
-    }
-}
 }  // namespace starcafe::interfaces::rest
 
