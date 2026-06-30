@@ -22,6 +22,8 @@ class IBusinessRepository
     virtual std::optional<businesses::Business> findSingleActive() = 0;
     virtual std::vector<businesses::Business> listAll(bool onlyActive = false) = 0;
     virtual businesses::Business create(const businesses::Business &business) = 0;
+    virtual businesses::Business updateTheme(std::int64_t id, const std::string &primaryColor) = 0;
+    virtual businesses::Business updateLogo(std::int64_t id, const std::string &logoUrl) = 0;
 };
 
 class IUserRepository
