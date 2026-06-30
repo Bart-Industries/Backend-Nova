@@ -1,6 +1,7 @@
 #include "interfaces/rest/api_controller.h"
 
 #include "application/common/dtos.h"
+#include "domain/businesses/theme_catalog.h"
 #include "domain/common/enums.h"
 #include "domain/common/errors.h"
 #include "infrastructure/security/auth_filters.h"
@@ -128,6 +129,14 @@ Json::Value businessToJson(const domain::businesses::Business &business)
     value["primaryColor"] = business.primaryColor;
     value["isActive"] = business.isActive;
     value["createdAt"] = business.createdAt;
+    if (const auto themeKey = domain::businesses::themeKeyFromColor(business.primaryColor); themeKey.has_value())
+    {
+        value["themeKey"] = std::string(*themeKey);
+    }
+    else
+    {
+        value["themeKey"] = Json::nullValue;
+    }
     return value;
 }
 
@@ -268,6 +277,7 @@ Json::Value paymentToJson(const domain::payments::Payment &payment)
 Json::Value publicTableSessionToJson(const application::orders::PublicTableSession &session)
 {
     Json::Value value;
+    value["business"] = businessToJson(session.business);
     value["table"] = tableToJson(session.table);
     value["activeOrdersCount"] = Json::Int64(session.activeOrdersCount);
     value["remainingSlots"] = Json::Int64(session.remainingSlots);

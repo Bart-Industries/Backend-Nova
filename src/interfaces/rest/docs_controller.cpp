@@ -30,13 +30,13 @@ void addJsonRequestBody(Json::Value &operation,
     operation["requestBody"]["content"]["application/json"]["schema"] = schema;
 }
 
-void addMultipartRequestBody(Json::Value &operation)
+void addMultipartRequestBody(Json::Value &operation, const std::string &fieldName = "image")
 {
     Json::Value schema;
     schema["type"] = "object";
-    schema["required"].append("image");
-    schema["properties"]["image"]["type"] = "string";
-    schema["properties"]["image"]["format"] = "binary";
+    schema["required"].append(fieldName);
+    schema["properties"][fieldName]["type"] = "string";
+    schema["properties"][fieldName]["format"] = "binary";
     operation["requestBody"]["required"] = true;
     operation["requestBody"]["content"]["multipart/form-data"]["schema"] = schema;
 }
@@ -205,6 +205,8 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     root["tags"][11]["description"] = "Busqueda y pago de pedidos en caja.";
     root["tags"][12]["name"] = "Uploads";
     root["tags"][12]["description"] = "Entrega publica de archivos e imagenes.";
+    root["tags"][13]["name"] = "Admin Business Branding";
+    root["tags"][13]["description"] = "Configuracion de branding por cafeteria para usuarios ADMIN.";
 
     root["components"]["securitySchemes"]["bearerAuth"]["type"] = "http";
     root["components"]["securitySchemes"]["bearerAuth"]["scheme"] = "bearer";
@@ -316,6 +318,23 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/admin/users/{id}/deactivate"]["patch"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/users/{id}/deactivate"]["patch"], "id", "Id del usuario");
     attachDefaultResponses(paths["/api/v1/admin/users/{id}/deactivate"]["patch"]);
+
+    paths["/api/v1/admin/business"]["get"]["summary"] = "Obtener branding de la cafeteria actual";
+    addTag(paths["/api/v1/admin/business"]["get"], "Admin Business Branding");
+    paths["/api/v1/admin/business"]["get"]["security"] = bearerSecurity();
+    attachDefaultResponses(paths["/api/v1/admin/business"]["get"]);
+
+    paths["/api/v1/admin/business/theme"]["patch"]["summary"] = "Actualizar tema predefinido de la cafeteria";
+    addTag(paths["/api/v1/admin/business/theme"]["patch"], "Admin Business Branding");
+    paths["/api/v1/admin/business/theme"]["patch"]["security"] = bearerSecurity();
+    addJsonRequestBody(paths["/api/v1/admin/business/theme"]["patch"], {{"themeKey", "string"}}, {"themeKey"});
+    attachDefaultResponses(paths["/api/v1/admin/business/theme"]["patch"]);
+
+    paths["/api/v1/admin/business/logo"]["patch"]["summary"] = "Actualizar logo de la cafeteria";
+    addTag(paths["/api/v1/admin/business/logo"]["patch"], "Admin Business Branding");
+    paths["/api/v1/admin/business/logo"]["patch"]["security"] = bearerSecurity();
+    addMultipartRequestBody(paths["/api/v1/admin/business/logo"]["patch"], "logo");
+    attachDefaultResponses(paths["/api/v1/admin/business/logo"]["patch"]);
 
     paths["/api/v1/admin/tables"]["get"]["summary"] = "Listar mesas";
     addTag(paths["/api/v1/admin/tables"]["get"], "Admin Tables");

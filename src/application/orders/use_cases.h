@@ -1,12 +1,14 @@
 #pragma once
 
 #include "application/common/dtos.h"
+#include "domain/businesses/business.h"
 #include "domain/repositories.h"
 
 namespace starcafe::application::orders
 {
 struct PublicTableSession
 {
+    domain::businesses::Business business;
     domain::tables::RestaurantTable table;
     std::vector<domain::orders::Order> activeOrders;
     bool canCreateMoreOrders{true};
@@ -43,12 +45,15 @@ class GetOrderStatusForCustomerUseCase
 class GetPublicTableSessionUseCase
 {
   public:
-    GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository, domain::IOrderRepository &orderRepository);
+    GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository,
+                                 domain::IOrderRepository &orderRepository,
+                                 domain::IBusinessRepository &businessRepository);
     PublicTableSession execute(const std::string &qrToken);
 
   private:
     domain::IRestaurantTableRepository &tableRepository_;
     domain::IOrderRepository &orderRepository_;
+    domain::IBusinessRepository &businessRepository_;
 };
 
 class GetKitchenOrdersUseCase

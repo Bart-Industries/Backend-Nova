@@ -98,8 +98,10 @@ domain::orders::Order GetOrderStatusForCustomerUseCase::execute(std::int64_t ord
     return *order;
 }
 
-GetPublicTableSessionUseCase::GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository, domain::IOrderRepository &orderRepository)
-    : tableRepository_(tableRepository), orderRepository_(orderRepository)
+GetPublicTableSessionUseCase::GetPublicTableSessionUseCase(domain::IRestaurantTableRepository &tableRepository,
+                                                           domain::IOrderRepository &orderRepository,
+                                                           domain::IBusinessRepository &businessRepository)
+    : tableRepository_(tableRepository), orderRepository_(orderRepository), businessRepository_(businessRepository)
 {
 }
 
@@ -112,6 +114,12 @@ PublicTableSession GetPublicTableSessionUseCase::execute(const std::string &qrTo
     }
 
     PublicTableSession session;
+    const auto business = businessRepository_.findById(table->businessId);
+    if (!business.has_value() || !business->isActive)
+    {
+        throw domain::DomainError("Business not found");
+    }
+    session.business = *business;
     session.table = *table;
     session.activeOrders = orderRepository_.listActiveByTableId(table->id);
     session.activeOrdersCount = static_cast<std::int64_t>(session.activeOrders.size());
