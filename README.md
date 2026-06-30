@@ -21,16 +21,20 @@ Backend monolitico modular en C++ moderno con Drogon, PostgreSQL y una estructur
    - `CORS_ALLOWED_ORIGINS`
    - `FRONTEND_BASE_URL`
    - `BCRYPT_COST`
-   - `UPLOAD_DIR`
+   - `APP_THREADS`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+   - `CLOUDINARY_FOLDER`
+   - `CLOUDINARY_BUSINESS_FOLDER`
    - `MAX_PRODUCT_IMAGE_SIZE_MB`
-   - `PUBLIC_FILES_BASE_URL`
 
 ## Ejecutar localmente
 
 ```powershell
 cmake -S . -B build
 cmake --build build
-.\build\Debug\starcafe.exe
+.\build\Debug\nova.exe
 ```
 
 En Linux/macOS:
@@ -38,8 +42,57 @@ En Linux/macOS:
 ```bash
 cmake -S . -B build
 cmake --build build
-./build/starcafe
+./build/nova
 ```
+
+## Docker local
+
+Construir la imagen:
+
+```bash
+docker build -t nova-backend .
+```
+
+Ejecutar el contenedor:
+
+```bash
+docker run --rm -p 8080:8080 --env-file .env nova-backend
+```
+
+## Deploy en Render
+
+Este proyecto debe desplegarse en Render como servicio `Docker`, no como runtime nativo.
+
+### Pasos
+
+1. Crea un nuevo `Web Service`.
+2. Conecta tu repositorio.
+3. En `Language`, elige `Docker`.
+4. Render detectara automaticamente el `Dockerfile`.
+5. Configura las variables de entorno del servicio.
+6. Usa como `Health Check Path`: `/openapi.json`
+
+### Variables de entorno recomendadas en Render
+
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `CORS_ALLOWED_ORIGINS`
+- `FRONTEND_BASE_URL`
+- `BCRYPT_COST`
+- `APP_THREADS`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `CLOUDINARY_FOLDER`
+- `CLOUDINARY_BUSINESS_FOLDER`
+- `MAX_PRODUCT_IMAGE_SIZE_MB`
+
+Notas:
+
+- No necesitas definir `APP_PORT` en Render si usas Docker; el backend ahora acepta `PORT` automaticamente.
+- Render inyecta `PORT` por defecto en contenedores.
+- Si tu frontend vive en otro dominio, ajusta `CORS_ALLOWED_ORIGINS` y `FRONTEND_BASE_URL`.
 
 ## Endpoints principales
 
@@ -158,6 +211,6 @@ curl -X POST http://localhost:8080/api/v1/admin/products/1/image \
 ## Notas
 
 - El total del pedido siempre se recalcula en backend.
-- Las imagenes de productos se guardan en storage local y PostgreSQL solo almacena metadata y `file_path`.
+- Las imagenes de productos y logos de negocio se guardan en Cloudinary; PostgreSQL solo almacena metadata y URLs.
 - Los queries SQL asumen nombres de columnas convencionales sobre la base dada. Si tu esquema usa variantes como `restaurant_table_id` en lugar de `table_id`, ajusta los repositorios sin cambiar las reglas de dominio.
 - Productos, categorias, adicionales, mesas y usuarios se desactivan con `is_active = false`.
