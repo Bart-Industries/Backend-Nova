@@ -26,6 +26,7 @@ add_executable(nova
     src/infrastructure/security/auth_filters.cpp
     src/infrastructure/qr/qr_token_service.cpp
     src/interfaces/rest/api_controller.cpp
+    src/interfaces/rest/business_branding_controller.cpp
     src/interfaces/rest/docs_controller.cpp
     src/interfaces/rest/product_image_controller.cpp
 )
