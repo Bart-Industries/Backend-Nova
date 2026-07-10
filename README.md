@@ -100,6 +100,8 @@ Documentacion interactiva:
 
 - `GET /docs`
 - `GET /openapi.json`
+- `GET /health`
+- `GET /ready`
 
 ### Auth
 
@@ -191,11 +193,7 @@ Documentacion interactiva:
 
 ### Pagar pedido
 
-```json
-{
-  "amount": 49.8
-}
-```
+Haz `POST /api/v1/admin/cashier/orders/{orderId}/pay` sin body; el backend usara siempre el `total` calculado del pedido.
 
 ### Subir imagen principal de producto
 
@@ -211,6 +209,7 @@ curl -X POST http://localhost:8080/api/v1/admin/products/1/image \
 
 - `POST /api/v1/auth/register` solo queda publico para el bootstrap inicial del primer `SUPER_ADMIN`; despues exige autenticacion `SUPER_ADMIN`.
 - El total del pedido siempre se recalcula en backend.
+- Caja ya no envia `amount`; el backend usa siempre el `total` persistido del pedido al marcarlo como `PAID`.
 - El estado publico de un pedido ahora exige `qrToken` de la mesa duena del pedido para evitar consultas cruzadas por `orderId`.
 - Las imagenes de productos y logos de negocio se guardan en Cloudinary; PostgreSQL solo almacena metadata y URLs.
 - Los queries SQL asumen nombres de columnas convencionales sobre la base dada. Si tu esquema usa variantes como `restaurant_table_id` en lugar de `table_id`, ajusta los repositorios sin cambiar las reglas de dominio.
