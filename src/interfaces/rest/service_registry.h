@@ -7,6 +7,7 @@
 #include "application/payments/use_cases.h"
 #include "application/tables/use_cases.h"
 #include "infrastructure/storage/file_storage_service.h"
+#include <drogon/orm/DbClient.h>
 
 namespace starcafe::interfaces::rest
 {
@@ -17,6 +18,7 @@ struct ServiceRegistry
     domain::IProductRepository *productRepository{};
     domain::IAddonRepository *addonRepository{};
     domain::IProductImageRepository *productImageRepository{};
+    drogon::orm::DbClientPtr dbClient;
     infrastructure::storage::FileStorageService *fileStorageService{};
     std::string frontendBaseUrl;
     application::businesses::CreateBusinessUseCase *createBusiness{};
