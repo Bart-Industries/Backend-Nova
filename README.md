@@ -1,4 +1,4 @@
-# StarCafe Backend
+# Nova Backend
 
 Backend monolitico modular en C++ moderno con Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
 

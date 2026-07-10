@@ -228,6 +228,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
 
     paths["/api/v1/auth/register"]["post"]["summary"] = "Registrar usuario";
     addTag(paths["/api/v1/auth/register"]["post"], "Auth");
+    paths["/api/v1/auth/register"]["post"]["security"] = bearerSecurity();
     addJsonRequestBody(paths["/api/v1/auth/register"]["post"],
                        {{"name", "string"}, {"email", "string"}, {"password", "string"}, {"role", "string"}, {"businessId", "integer"}},
                        {"name", "email", "password", "role"});
