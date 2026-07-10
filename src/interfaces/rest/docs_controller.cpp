@@ -205,12 +205,22 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     root["tags"][11]["description"] = "Busqueda y pago de pedidos en caja.";
     root["tags"][12]["name"] = "Admin Business Branding";
     root["tags"][12]["description"] = "Configuracion de branding por cafeteria para usuarios ADMIN.";
+    root["tags"][13]["name"] = "Health";
+    root["tags"][13]["description"] = "Verificacion operativa del proceso y disponibilidad de base de datos.";
 
     root["components"]["securitySchemes"]["bearerAuth"]["type"] = "http";
     root["components"]["securitySchemes"]["bearerAuth"]["scheme"] = "bearer";
     root["components"]["securitySchemes"]["bearerAuth"]["bearerFormat"] = "JWT";
 
     auto &paths = root["paths"];
+
+    paths["/health"]["get"]["summary"] = "Health basico del proceso";
+    addTag(paths["/health"]["get"], "Health");
+    attachDefaultResponses(paths["/health"]["get"]);
+
+    paths["/ready"]["get"]["summary"] = "Readiness con verificacion de base de datos";
+    addTag(paths["/ready"]["get"], "Health");
+    attachDefaultResponses(paths["/ready"]["get"]);
 
     paths["/api/v1/super-admin/businesses"]["get"]["summary"] = "Listar cafeterias";
     addTag(paths["/api/v1/super-admin/businesses"]["get"], "Super Admin Businesses");
@@ -465,7 +475,6 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     addTag(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], "Cashier");
     paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"]["security"] = bearerSecurity();
     addPathParameter(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], "orderId", "Id del pedido");
-    addJsonRequestBody(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"], {{"businessId", "integer"}, {"amount", "number"}}, {"amount"});
     attachDefaultResponses(paths["/api/v1/admin/cashier/orders/{orderId}/pay"]["post"]);
 
     paths["/api/v1/admin/products/{productId}/image"]["post"]["summary"] = "Subir imagen principal de producto";
