@@ -1,6 +1,6 @@
 # Nova Backend
 
-Backend monolitico modular en C++ moderno con Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
+Backend monolitico modular para Nova, pensado para operar una multicafeteria o cadena de cafeterias, con C++ moderno, Drogon, PostgreSQL y una estructura inspirada en DDD + Clean Architecture.
 
 ## Requisitos
 
@@ -158,7 +158,7 @@ Documentacion interactiva:
 ```json
 {
   "name": "Admin Principal",
-  "email": "admin@starcafe.com",
+  "email": "admin@nova.com",
   "password": "StrongPassword123!",
   "role": "ADMIN"
 }
@@ -168,7 +168,7 @@ Documentacion interactiva:
 
 ```json
 {
-  "email": "admin@starcafe.com",
+  "email": "admin@nova.com",
   "password": "StrongPassword123!"
 }
 ```
