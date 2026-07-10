@@ -116,7 +116,6 @@ struct PayOrderCommand
 {
     std::int64_t businessId{};
     std::int64_t orderId{};
-    double amount{};
 };
 
 struct AuthPayload

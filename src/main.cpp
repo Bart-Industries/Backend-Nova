@@ -97,6 +97,7 @@ int main()
     registry.productRepository = &productRepository;
     registry.addonRepository = &addonRepository;
     registry.productImageRepository = &productImageRepository;
+    registry.dbClient = db;
     registry.fileStorageService = &fileStorageService;
     registry.frontendBaseUrl = config.frontendBaseUrl;
     registry.createBusiness = &createBusiness;
