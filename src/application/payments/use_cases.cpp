@@ -22,7 +22,8 @@ SearchOrdersForCashierUseCase::SearchOrdersForCashierUseCase(domain::IOrderRepos
 {
 }
 
-std::vector<domain::orders::Order> SearchOrdersForCashierUseCase::execute(const std::string &customerName,
+std::vector<domain::orders::Order> SearchOrdersForCashierUseCase::execute(std::int64_t businessId,
+                                                                           const std::string &customerName,
                                                                            const std::string &tableNumber,
                                                                            const std::string &status)
 {
@@ -38,7 +39,7 @@ std::vector<domain::orders::Order> SearchOrdersForCashierUseCase::execute(const 
             throw domain::DomainError("Invalid order status");
         }
     }
-    return orderRepository_.searchOrders(customerName, tableNumber, normalizedStatus);
+    return orderRepository_.searchOrders(businessId, customerName, tableNumber, normalizedStatus);
 }
 
 PayOrderUseCase::PayOrderUseCase(domain::IOrderRepository &orderRepository, domain::IPaymentRepository &paymentRepository)
@@ -49,18 +50,18 @@ PayOrderUseCase::PayOrderUseCase(domain::IOrderRepository &orderRepository, doma
 domain::payments::Payment PayOrderUseCase::execute(const PayOrderCommand &command)
 {
     const auto order = orderRepository_.findById(command.orderId);
-    if (!order.has_value())
+    if (!order.has_value() || order->businessId != command.businessId)
     {
         throw domain::DomainError("Order not found");
     }
-    if (command.amount <= 0)
+    if (order->total <= 0)
     {
-        throw domain::DomainError("Paid amount must be greater than zero");
+        throw domain::DomainError("Order total must be greater than zero");
     }
     orderRepository_.updateStatus(command.orderId, domain::OrderStatus::PAID);
-    return paymentRepository_.upsertPaid(command.orderId, command.amount);
+    return paymentRepository_.upsertPaid(command.businessId, command.orderId, order->total);
 }
 
 ListPaymentsUseCase::ListPaymentsUseCase(domain::IPaymentRepository &paymentRepository) : paymentRepository_(paymentRepository) {}
-std::vector<domain::payments::Payment> ListPaymentsUseCase::execute() { return paymentRepository_.listAll(); }
+std::vector<domain::payments::Payment> ListPaymentsUseCase::execute(std::int64_t businessId) { return paymentRepository_.listAll(businessId); }
 }  // namespace starcafe::application::payments

@@ -16,9 +16,13 @@ struct AppConfig
     std::vector<std::string> corsAllowedOrigins;
     std::string frontendBaseUrl;
     int bcryptCost{};
-    std::string uploadDir;
+    int appThreads{};
+    std::string cloudinaryCloudName;
+    std::string cloudinaryApiKey;
+    std::string cloudinaryApiSecret;
+    std::string cloudinaryFolder;
+    std::string cloudinaryBusinessFolder;
     std::int64_t maxProductImageSizeMb{};
-    std::string publicFilesBaseUrl;
 
     static AppConfig load();
 };

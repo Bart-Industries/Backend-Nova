@@ -1,6 +1,7 @@
 #include "interfaces/rest/product_image_controller.h"
 
 #include "domain/common/errors.h"
+#include "infrastructure/security/auth_filters.h"
 #include "interfaces/rest/service_registry.h"
 #include "infrastructure/storage/file_storage_service.h"
 
@@ -43,6 +44,25 @@ drogon::HttpResponsePtr jsonResponse(bool success, const Json::Value &data, cons
     return response;
 }
 
+std::int64_t resolveBusinessId(const drogon::HttpRequestPtr &req)
+{
+    const auto claims = infrastructure::security::parseBearerClaims(req);
+    if (!claims.has_value())
+    {
+        throw domain::DomainError("Invalid token");
+    }
+    if (claims->businessId.has_value())
+    {
+        return *claims->businessId;
+    }
+    const auto parameter = req->getParameter("businessId");
+    if (!parameter.empty() && claims->role == "SUPER_ADMIN")
+    {
+        return std::stoll(parameter);
+    }
+    throw domain::DomainError("businessId is required for this request");
+}
+
 Json::Value productImageToJson(const domain::menu::ProductImage &image)
 {
     Json::Value data;
@@ -51,7 +71,7 @@ Json::Value productImageToJson(const domain::menu::ProductImage &image)
     data["file_name"] = image.fileName;
     data["mime_type"] = image.mimeType;
     data["file_size"] = Json::Int64(image.fileSize);
-    data["url"] = services().publicProductFilesBaseUrl + "/" + image.fileName;
+    data["url"] = services().fileStorageService->publicUrl(image.filePath, image.mimeType);
     return data;
 }
 
@@ -84,8 +104,9 @@ application::UploadProductImageCommand mapUploadCommand(const drogon::HttpReques
         throw domain::DomainError("Solo se permiten imagenes PNG, JPG, JPEG o WEBP");
     }
     command.fileSize = static_cast<std::int64_t>(file.fileLength());
+    command.deleteOldPhysicalFile = req->getParameter("deleteOldFile") == "true";
     const auto tempDirectory = std::filesystem::temp_directory_path();
-    const auto tempPath = tempDirectory / ("starcafe-upload-" + drogon::utils::getUuid() + ".tmp");
+    const auto tempPath = tempDirectory / ("nova-upload-" + drogon::utils::getUuid() + ".tmp");
     if (file.saveAs(tempPath.string()) != 0)
     {
         throw domain::DomainError("Could not persist uploaded image");
@@ -101,7 +122,10 @@ void ProductImageController::uploadMainImage(const drogon::HttpRequestPtr &req,
 {
     try
     {
-        callback(jsonResponse(true, productImageToJson(services().uploadProductImage->execute(mapUploadCommand(req, productId))), "", drogon::k201Created));
+        callback(jsonResponse(true,
+                              productImageToJson(services().uploadProductImage->execute(resolveBusinessId(req), mapUploadCommand(req, productId))),
+                              "",
+                              drogon::k201Created));
     }
     catch (const domain::DomainError &error)
     {
@@ -119,7 +143,8 @@ void ProductImageController::replaceMainImage(const drogon::HttpRequestPtr &req,
 {
     try
     {
-        callback(jsonResponse(true, productImageToJson(services().replaceProductImage->execute(mapUploadCommand(req, productId)))));
+        callback(jsonResponse(true,
+                              productImageToJson(services().replaceProductImage->execute(resolveBusinessId(req), mapUploadCommand(req, productId)))));
     }
     catch (const domain::DomainError &error)
     {
@@ -138,7 +163,7 @@ void ProductImageController::deleteMainImage(const drogon::HttpRequestPtr &req,
     try
     {
         const bool deletePhysicalFile = req->getParameter("deleteFile") == "true";
-        services().deleteProductImage->execute(std::stoll(productId), deletePhysicalFile);
+        services().deleteProductImage->execute(resolveBusinessId(req), std::stoll(productId), deletePhysicalFile);
         callback(jsonResponse(true, Json::Value("Product image removed")));
     }
     catch (const domain::DomainError &error)
@@ -151,22 +176,5 @@ void ProductImageController::deleteMainImage(const drogon::HttpRequestPtr &req,
     }
 }
 
-void ProductImageController::serveImage(const drogon::HttpRequestPtr &,
-                                        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
-                                        std::string fileName)
-{
-    try
-    {
-        const auto absolutePath = services().fileStorageService->resolvePublicFile(fileName);
-        callback(drogon::HttpResponse::newFileResponse(absolutePath));
-    }
-    catch (const domain::DomainError &error)
-    {
-        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k400BadRequest));
-    }
-    catch (const std::exception &error)
-    {
-        callback(jsonResponse(false, Json::nullValue, error.what(), drogon::k500InternalServerError));
-    }
-}
 }  // namespace starcafe::interfaces::rest
+

@@ -1,22 +1,31 @@
 #pragma once
 
+#include "application/businesses/use_cases.h"
 #include "application/identity/use_cases.h"
 #include "application/menu/use_cases.h"
 #include "application/orders/use_cases.h"
 #include "application/payments/use_cases.h"
 #include "application/tables/use_cases.h"
 #include "infrastructure/storage/file_storage_service.h"
+#include <drogon/orm/DbClient.h>
 
 namespace starcafe::interfaces::rest
 {
 struct ServiceRegistry
 {
+    domain::IBusinessRepository *businessRepository{};
     domain::IUserRepository *userRepository{};
     domain::IProductRepository *productRepository{};
     domain::IAddonRepository *addonRepository{};
     domain::IProductImageRepository *productImageRepository{};
+    drogon::orm::DbClientPtr dbClient;
     infrastructure::storage::FileStorageService *fileStorageService{};
-    std::string publicProductFilesBaseUrl;
+    std::string frontendBaseUrl;
+    application::businesses::CreateBusinessUseCase *createBusiness{};
+    application::businesses::ListBusinessesUseCase *listBusinesses{};
+    application::businesses::GetBusinessUseCase *getBusiness{};
+    application::businesses::UpdateBusinessThemeUseCase *updateBusinessTheme{};
+    application::businesses::UpdateBusinessLogoUseCase *updateBusinessLogo{};
     application::identity::RegisterUserUseCase *registerUser{};
     application::identity::LoginUseCase *login{};
     application::identity::GetCurrentUserUseCase *getCurrentUser{};

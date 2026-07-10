@@ -21,7 +21,7 @@ class GenerateQrTokenUseCase
 {
   public:
     GenerateQrTokenUseCase(domain::IRestaurantTableRepository &repository, infrastructure::qr::QrTokenService &qrTokenService);
-    domain::tables::RestaurantTable execute(std::int64_t tableId);
+    domain::tables::RestaurantTable execute(std::int64_t businessId, std::int64_t tableId);
 
   private:
     domain::IRestaurantTableRepository &repository_;
@@ -42,7 +42,7 @@ class ListTablesUseCase
 {
   public:
     explicit ListTablesUseCase(domain::IRestaurantTableRepository &repository);
-    std::vector<domain::tables::RestaurantTable> execute();
+    std::vector<domain::tables::RestaurantTable> execute(std::int64_t businessId);
 
   private:
     domain::IRestaurantTableRepository &repository_;
@@ -52,7 +52,7 @@ class DeactivateTableUseCase
 {
   public:
     explicit DeactivateTableUseCase(domain::IRestaurantTableRepository &repository);
-    void execute(std::int64_t id);
+    void execute(std::int64_t businessId, std::int64_t id);
 
   private:
     domain::IRestaurantTableRepository &repository_;

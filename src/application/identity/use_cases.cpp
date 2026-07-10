@@ -21,15 +21,31 @@ domain::identity::User RegisterUserUseCase::execute(const RegisterUserCommand &c
         throw domain::DomainError("Email already registered");
     }
 
-    if (command.role == domain::UserRole::ADMIN && userRepository_.countActiveAdmins() >= 3)
+    if (command.role == domain::UserRole::SUPER_ADMIN && command.businessId.has_value())
     {
-        throw domain::DomainError("Maximum of 3 active admin users reached");
+        throw domain::DomainError("SUPER_ADMIN must not belong to a business");
+    }
+
+    if ((command.role == domain::UserRole::ADMIN || command.role == domain::UserRole::KITCHEN) && !command.businessId.has_value())
+    {
+        throw domain::DomainError("Business is required for ADMIN and KITCHEN users");
+    }
+
+    if (command.role == domain::UserRole::ADMIN && userRepository_.countActiveByRole(domain::UserRole::ADMIN, command.businessId) >= 3)
+    {
+        throw domain::DomainError("Maximum of 3 active admin users reached for this business");
+    }
+
+    if (command.role == domain::UserRole::KITCHEN && userRepository_.countActiveByRole(domain::UserRole::KITCHEN, command.businessId) >= 5)
+    {
+        throw domain::DomainError("Maximum of 5 active kitchen users reached for this business");
     }
 
     domain::identity::User user;
     user.name = command.name;
     user.email = command.email;
     user.passwordHash = passwordHasher_.hash(command.password);
+    user.businessId = command.businessId;
     user.role = command.role;
     user.isActive = true;
     return userRepository_.create(user);
@@ -51,8 +67,9 @@ AuthPayload LoginUseCase::execute(const LoginCommand &command)
     }
 
     AuthPayload payload;
-    payload.token = jwtService_.createToken(user->id, user->name, user->email, user->role);
+    payload.token = jwtService_.createToken(user->id, user->businessId, user->name, user->email, user->role);
     payload.userId = user->id;
+    payload.businessId = user->businessId;
     payload.role = domain::toString(user->role);
     payload.name = user->name;
     payload.email = user->email;

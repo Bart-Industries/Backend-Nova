@@ -9,7 +9,8 @@ class SearchOrdersForCashierUseCase
 {
   public:
     explicit SearchOrdersForCashierUseCase(domain::IOrderRepository &orderRepository);
-    std::vector<domain::orders::Order> execute(const std::string &customerName,
+    std::vector<domain::orders::Order> execute(std::int64_t businessId,
+                                               const std::string &customerName,
                                                const std::string &tableNumber,
                                                const std::string &status);
 
@@ -32,7 +33,7 @@ class ListPaymentsUseCase
 {
   public:
     explicit ListPaymentsUseCase(domain::IPaymentRepository &paymentRepository);
-    std::vector<domain::payments::Payment> execute();
+    std::vector<domain::payments::Payment> execute(std::int64_t businessId);
 
   private:
     domain::IPaymentRepository &paymentRepository_;

@@ -1,3 +1,4 @@
+#include "application/businesses/use_cases.h"
 #include "application/identity/use_cases.h"
 #include "application/menu/use_cases.h"
 #include "application/orders/use_cases.h"
@@ -25,8 +26,16 @@ int main()
     infrastructure::security::PasswordHasher passwordHasher(config.bcryptCost);
     infrastructure::security::JwtService jwtService(config.jwtSecret, config.jwtExpiresIn);
     infrastructure::qr::QrTokenService qrTokenService;
-    infrastructure::storage::FileStorageService fileStorageService(config.uploadDir);
 
+    infrastructure::storage::FileStorageOptions storageOptions;
+    storageOptions.cloudinaryCloudName = config.cloudinaryCloudName;
+    storageOptions.cloudinaryApiKey = config.cloudinaryApiKey;
+    storageOptions.cloudinaryApiSecret = config.cloudinaryApiSecret;
+    storageOptions.cloudinaryFolder = config.cloudinaryFolder;
+    storageOptions.cloudinaryBusinessFolder = config.cloudinaryBusinessFolder;
+    infrastructure::storage::FileStorageService fileStorageService(std::move(storageOptions));
+
+    infrastructure::repositories::PostgresBusinessRepository businessRepository(db);
     infrastructure::repositories::PostgresUserRepository userRepository(db);
     infrastructure::repositories::PostgresCategoryRepository categoryRepository(db);
     infrastructure::repositories::PostgresAddonRepository addonRepository(db);
@@ -36,6 +45,14 @@ int main()
     infrastructure::repositories::PostgresOrderRepository orderRepository(db);
     infrastructure::repositories::PostgresPaymentRepository paymentRepository(db);
 
+    application::businesses::CreateBusinessUseCase createBusiness(businessRepository);
+    application::businesses::ListBusinessesUseCase listBusinesses(businessRepository);
+    application::businesses::GetBusinessUseCase getBusiness(businessRepository);
+    application::businesses::UpdateBusinessThemeUseCase updateBusinessTheme(businessRepository);
+    application::businesses::UpdateBusinessLogoUseCase updateBusinessLogo(
+        businessRepository,
+        fileStorageService,
+        config.maxProductImageSizeMb * 1024 * 1024);
     application::identity::RegisterUserUseCase registerUser(userRepository, passwordHasher);
     application::identity::LoginUseCase login(userRepository, passwordHasher, jwtService);
     application::identity::GetCurrentUserUseCase getCurrentUser(userRepository);
@@ -47,14 +64,13 @@ int main()
     application::menu::MarkProductUnavailableUseCase markProductUnavailable(productRepository);
     application::menu::DeactivateProductUseCase deactivateProduct(productRepository);
     application::menu::CreateAddonUseCase createAddon(addonRepository);
-    application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository);
-    application::menu::GetPublicMenuUseCase getPublicMenu(productRepository);
+    application::menu::AssignAddonToProductUseCase assignAddonToProduct(productRepository, addonRepository);
+    application::menu::GetPublicMenuUseCase getPublicMenu(productRepository, businessRepository);
     application::menu::ListProductsUseCase listProducts(productRepository);
-    application::menu::UploadProductImageUseCase uploadProductImage(
-        productRepository,
-        productImageRepository,
-        fileStorageService,
-        config.maxProductImageSizeMb * 1024 * 1024);
+    application::menu::UploadProductImageUseCase uploadProductImage(productRepository,
+                                                                    productImageRepository,
+                                                                    fileStorageService,
+                                                                    config.maxProductImageSizeMb * 1024 * 1024);
     application::menu::ReplaceProductImageUseCase replaceProductImage(uploadProductImage);
     application::menu::DeleteProductImageUseCase deleteProductImage(productRepository, productImageRepository, fileStorageService);
     application::tables::CreateTableUseCase createTable(tableRepository, qrTokenService);
@@ -63,8 +79,8 @@ int main()
     application::tables::ListTablesUseCase listTables(tableRepository);
     application::tables::DeactivateTableUseCase deactivateTable(tableRepository);
     application::orders::CreateOrderFromTableUseCase createOrderFromTable(tableRepository, productRepository, addonRepository, orderRepository);
-    application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository);
-    application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository);
+    application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository, businessRepository);
+    application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository, tableRepository);
     application::orders::GetKitchenOrdersUseCase getKitchenOrders(orderRepository);
     application::orders::StartPreparingOrderUseCase startPreparingOrder(orderRepository);
     application::orders::MarkOrderItemReadyUseCase markOrderItemReady(orderRepository);
@@ -76,12 +92,19 @@ int main()
     application::payments::ListPaymentsUseCase listPayments(paymentRepository);
 
     auto &registry = interfaces::rest::services();
+    registry.businessRepository = &businessRepository;
     registry.userRepository = &userRepository;
     registry.productRepository = &productRepository;
     registry.addonRepository = &addonRepository;
     registry.productImageRepository = &productImageRepository;
+    registry.dbClient = db;
     registry.fileStorageService = &fileStorageService;
-    registry.publicProductFilesBaseUrl = config.publicFilesBaseUrl + "/products";
+    registry.frontendBaseUrl = config.frontendBaseUrl;
+    registry.createBusiness = &createBusiness;
+    registry.listBusinesses = &listBusinesses;
+    registry.getBusiness = &getBusiness;
+    registry.updateBusinessTheme = &updateBusinessTheme;
+    registry.updateBusinessLogo = &updateBusinessLogo;
     registry.registerUser = &registerUser;
     registry.login = &login;
     registry.getCurrentUser = &getCurrentUser;
@@ -120,7 +143,7 @@ int main()
     infrastructure::security::configureJwt(&jwtService);
 
     drogon::app().addListener("0.0.0.0", config.appPort);
-    drogon::app().setThreadNum(1);
+    drogon::app().setThreadNum(config.appThreads);
     drogon::app().run();
     return 0;
 }
