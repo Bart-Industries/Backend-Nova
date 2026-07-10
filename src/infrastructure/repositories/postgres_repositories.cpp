@@ -552,9 +552,13 @@ void PostgresOrderRepository::updateStatus(std::int64_t orderId, domain::OrderSt
 {
     db_->execSqlSync("update orders set status = $1 where id = $2", domain::toString(status), orderId);
 }
-void PostgresOrderRepository::updateOrderItemStatus(std::int64_t itemId, domain::OrderItemStatus status)
+bool PostgresOrderRepository::updateOrderItemStatus(std::int64_t businessId, std::int64_t itemId, domain::OrderItemStatus status)
 {
-    db_->execSqlSync("update order_items set status = $1 where id = $2", domain::toString(status), itemId);
+    const auto result = db_->execSqlSync("update order_items oi set status = $1 from orders o where oi.id = $2 and o.id = oi.order_id and o.business_id = $3 returning oi.id",
+                                         domain::toString(status),
+                                         itemId,
+                                         businessId);
+    return !result.empty();
 }
 bool PostgresOrderRepository::allItemsReady(std::int64_t orderId)
 {

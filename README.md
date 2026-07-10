@@ -112,7 +112,7 @@ Documentacion interactiva:
 - `GET /api/v1/tables/qr/{qrToken}`
 - `GET /api/v1/public/menu`
 - `POST /api/v1/public/tables/{qrToken}/orders`
-- `GET /api/v1/public/orders/{orderId}/status`
+- `GET /api/v1/public/orders/{orderId}/status?qrToken={qrToken}`
 
 ### Kitchen
 
@@ -209,7 +209,9 @@ curl -X POST http://localhost:8080/api/v1/admin/products/1/image \
 
 ## Notas
 
+- `POST /api/v1/auth/register` solo queda publico para el bootstrap inicial del primer `SUPER_ADMIN`; despues exige autenticacion `SUPER_ADMIN`.
 - El total del pedido siempre se recalcula en backend.
+- El estado publico de un pedido ahora exige `qrToken` de la mesa duena del pedido para evitar consultas cruzadas por `orderId`.
 - Las imagenes de productos y logos de negocio se guardan en Cloudinary; PostgreSQL solo almacena metadata y URLs.
 - Los queries SQL asumen nombres de columnas convencionales sobre la base dada. Si tu esquema usa variantes como `restaurant_table_id` en lugar de `table_id`, ajusta los repositorios sin cambiar las reglas de dominio.
 - Productos, categorias, adicionales, mesas y usuarios se desactivan con `is_active = false`.

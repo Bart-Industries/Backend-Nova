@@ -108,7 +108,7 @@ class IOrderRepository
                                                     const std::string &tableNumber,
                                                     const std::string &status) = 0;
     virtual void updateStatus(std::int64_t orderId, OrderStatus status) = 0;
-    virtual void updateOrderItemStatus(std::int64_t itemId, OrderItemStatus status) = 0;
+    virtual bool updateOrderItemStatus(std::int64_t businessId, std::int64_t itemId, OrderItemStatus status) = 0;
     virtual bool allItemsReady(std::int64_t orderId) = 0;
 };
 

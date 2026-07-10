@@ -296,6 +296,18 @@ void ApiController::registerUser(const drogon::HttpRequestPtr &req, std::functio
 {
     executeSafely(callback, [&]() {
         const auto &json = body(req);
+        const auto claims = infrastructure::security::parseBearerClaims(req);
+        const bool bootstrapMode = registry.userRepository->listActive().empty();
+
+        if (!bootstrapMode)
+        {
+            if (!claims.has_value())
+            {
+                throw domain::DomainError("Authentication is required to register users");
+            }
+            ensureSuperAdmin(*claims);
+        }
+
         application::RegisterUserCommand command;
         command.name = sanitizeText(json["name"].asString());
         command.email = sanitizeText(json["email"].asString());
@@ -305,6 +317,15 @@ void ApiController::registerUser(const drogon::HttpRequestPtr &req, std::functio
         {
             command.businessId = json["businessId"].asInt64();
         }
+
+        if (bootstrapMode)
+        {
+            if (command.role != domain::UserRole::SUPER_ADMIN || command.businessId.has_value())
+            {
+                throw domain::DomainError("Bootstrap registration only allows a SUPER_ADMIN without businessId");
+            }
+        }
+
         return jsonResponse(successResponse(userToJson(registry.registerUser->execute(command))), drogon::k201Created);
     });
 }
@@ -410,9 +431,16 @@ void ApiController::createOrderFromTable(const drogon::HttpRequestPtr &req, std:
     });
 }
 
-void ApiController::getOrderStatus(const drogon::HttpRequestPtr &, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string orderId)
+void ApiController::getOrderStatus(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback, std::string orderId)
 {
-    executeSafely(callback, [&]() { return jsonResponse(successResponse(orderToJson(registry.getOrderStatus->execute(std::stoll(orderId))))); });
+    executeSafely(callback, [&]() {
+        const auto qrToken = sanitizeText(req->getParameter("qrToken"));
+        if (qrToken.empty())
+        {
+            throw domain::DomainError("qrToken is required");
+        }
+        return jsonResponse(successResponse(orderToJson(registry.getOrderStatus->execute(std::stoll(orderId), qrToken))));
+    });
 }
 
 void ApiController::getKitchenOrders(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback)

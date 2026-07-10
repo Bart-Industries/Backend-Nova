@@ -35,11 +35,13 @@ class CreateOrderFromTableUseCase
 class GetOrderStatusForCustomerUseCase
 {
   public:
-    explicit GetOrderStatusForCustomerUseCase(domain::IOrderRepository &orderRepository);
-    domain::orders::Order execute(std::int64_t orderId);
+    GetOrderStatusForCustomerUseCase(domain::IOrderRepository &orderRepository,
+                                     domain::IRestaurantTableRepository &tableRepository);
+    domain::orders::Order execute(std::int64_t orderId, const std::string &qrToken);
 
   private:
     domain::IOrderRepository &orderRepository_;
+    domain::IRestaurantTableRepository &tableRepository_;
 };
 
 class GetPublicTableSessionUseCase

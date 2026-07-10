@@ -129,7 +129,7 @@ class PostgresOrderRepository : public domain::IOrderRepository
                                                     const std::string &tableNumber,
                                                     const std::string &status) override;
     void updateStatus(std::int64_t orderId, domain::OrderStatus status) override;
-    void updateOrderItemStatus(std::int64_t itemId, domain::OrderItemStatus status) override;
+    bool updateOrderItemStatus(std::int64_t businessId, std::int64_t itemId, domain::OrderItemStatus status) override;
     bool allItemsReady(std::int64_t orderId) override;
 
   private:

@@ -83,15 +83,22 @@ domain::orders::Order CreateOrderFromTableUseCase::execute(const CreateOrderFrom
     return orderRepository_.create(order);
 }
 
-GetOrderStatusForCustomerUseCase::GetOrderStatusForCustomerUseCase(domain::IOrderRepository &orderRepository)
-    : orderRepository_(orderRepository)
+GetOrderStatusForCustomerUseCase::GetOrderStatusForCustomerUseCase(domain::IOrderRepository &orderRepository,
+                                                                   domain::IRestaurantTableRepository &tableRepository)
+    : orderRepository_(orderRepository), tableRepository_(tableRepository)
 {
 }
 
-domain::orders::Order GetOrderStatusForCustomerUseCase::execute(std::int64_t orderId)
+domain::orders::Order GetOrderStatusForCustomerUseCase::execute(std::int64_t orderId, const std::string &qrToken)
 {
+    const auto table = tableRepository_.findByQrToken(qrToken);
+    if (!table.has_value() || !table->isActive)
+    {
+        throw domain::DomainError("Invalid table QR token");
+    }
+
     const auto order = orderRepository_.findById(orderId);
-    if (!order.has_value())
+    if (!order.has_value() || order->tableId != table->id || order->businessId != table->businessId)
     {
         throw domain::DomainError("Order not found");
     }
@@ -153,8 +160,10 @@ void StartPreparingOrderUseCase::execute(std::int64_t businessId, std::int64_t o
 MarkOrderItemReadyUseCase::MarkOrderItemReadyUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}
 void MarkOrderItemReadyUseCase::execute(std::int64_t businessId, std::int64_t itemId)
 {
-    (void)businessId;
-    orderRepository_.updateOrderItemStatus(itemId, domain::OrderItemStatus::READY);
+    if (!orderRepository_.updateOrderItemStatus(businessId, itemId, domain::OrderItemStatus::READY))
+    {
+        throw domain::DomainError("Order item not found");
+    }
 }
 
 MarkOrderReadyUseCase::MarkOrderReadyUseCase(domain::IOrderRepository &orderRepository) : orderRepository_(orderRepository) {}

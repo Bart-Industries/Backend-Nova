@@ -80,7 +80,7 @@ int main()
     application::tables::DeactivateTableUseCase deactivateTable(tableRepository);
     application::orders::CreateOrderFromTableUseCase createOrderFromTable(tableRepository, productRepository, addonRepository, orderRepository);
     application::orders::GetPublicTableSessionUseCase getPublicTableSession(tableRepository, orderRepository, businessRepository);
-    application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository);
+    application::orders::GetOrderStatusForCustomerUseCase getOrderStatus(orderRepository, tableRepository);
     application::orders::GetKitchenOrdersUseCase getKitchenOrders(orderRepository);
     application::orders::StartPreparingOrderUseCase startPreparingOrder(orderRepository);
     application::orders::MarkOrderItemReadyUseCase markOrderItemReady(orderRepository);

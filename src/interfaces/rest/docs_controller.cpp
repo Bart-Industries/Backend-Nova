@@ -267,6 +267,7 @@ void DocsController::openApiJson(const drogon::HttpRequestPtr &, std::function<v
     paths["/api/v1/public/orders/{orderId}/status"]["get"]["summary"] = "Estado de pedido";
     addTag(paths["/api/v1/public/orders/{orderId}/status"]["get"], "Public");
     addPathParameter(paths["/api/v1/public/orders/{orderId}/status"]["get"], "orderId", "Id del pedido");
+    addQueryParameter(paths["/api/v1/public/orders/{orderId}/status"]["get"], "qrToken", "Token QR de la mesa dueña del pedido");
     attachDefaultResponses(paths["/api/v1/public/orders/{orderId}/status"]["get"]);
 
     paths["/api/v1/kitchen/orders"]["get"]["summary"] = "Pedidos activos de cocina";
