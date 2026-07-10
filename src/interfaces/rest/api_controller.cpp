@@ -811,11 +811,9 @@ void ApiController::payOrder(const drogon::HttpRequestPtr &req,
                              std::string orderId)
 {
     executeSafely(callback, [&]() {
-        const auto &json = body(req);
         application::PayOrderCommand command;
-        command.businessId = resolveBusinessId(req, &json);
+        command.businessId = resolveBusinessId(req);
         command.orderId = std::stoll(orderId);
-        command.amount = json["amount"].asDouble();
         return jsonResponse(successResponse(paymentToJson(registry.payOrder->execute(command))), drogon::k201Created);
     });
 }

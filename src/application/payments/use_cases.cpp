@@ -54,12 +54,12 @@ domain::payments::Payment PayOrderUseCase::execute(const PayOrderCommand &comman
     {
         throw domain::DomainError("Order not found");
     }
-    if (command.amount <= 0)
+    if (order->total <= 0)
     {
-        throw domain::DomainError("Paid amount must be greater than zero");
+        throw domain::DomainError("Order total must be greater than zero");
     }
     orderRepository_.updateStatus(command.orderId, domain::OrderStatus::PAID);
-    return paymentRepository_.upsertPaid(command.businessId, command.orderId, command.amount);
+    return paymentRepository_.upsertPaid(command.businessId, command.orderId, order->total);
 }
 
 ListPaymentsUseCase::ListPaymentsUseCase(domain::IPaymentRepository &paymentRepository) : paymentRepository_(paymentRepository) {}
