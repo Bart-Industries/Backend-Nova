@@ -200,7 +200,7 @@ Haz `POST /api/v1/admin/cashier/orders/{orderId}/pay` sin body; el backend usara
 Usa `multipart/form-data` con el campo `image`.
 
 ```bash
-curl -X POST http://localhost:8081/api/v1/admin/products/1/image \
+curl -X POST http://localhost:8080/api/v1/admin/products/1/image \
   -H "Authorization: Bearer TOKEN" \
   -F "image=@./capuccino.webp"
 ```
